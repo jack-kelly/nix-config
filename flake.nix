@@ -8,15 +8,8 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
-    xremap-flake.url = "github:xremap/nix-flake";
-
     home-manager = {
       url = "github:nix-community/home-manager";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    nix-index-database = {
-      url = "github:Mic92/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -25,27 +18,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    nix-alien = {
-      url = "github:thiagokokada/nix-alien";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     nix-colors.url = "github:misterio77/nix-colors";
-
-    sops-nix = {
-      url = "github:Mic92/sops-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
 
     prism = {
       url = "github:IogaMaster/prism";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.home-manager.follows = "home-manager";
-    };
-
-    nixpkgs-wivrn = {
-      url = "github:nixos/nixpkgs/efdeeae66101269fdcb3624ed315f6cfbf08ca95";
-      # url = "github:nixos/nixpkgs/19e0a58bcc6f1df16c48cdbac7d159d0e6fd9a00";
     };
 
     hyprland.url = "github:hyprwm/Hyprland";
@@ -57,15 +35,16 @@
 
     stylix.url = "github:danth/stylix";
 
-    ags.url = "github:Aylur/ags";
-
-    persist-retro.url = "github:Geometer1729/persist-retro";
+    nixvim = {
+      url = "github:nix-community/nixvim";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {...} @ inputs: let
     # super simple boilerplate-reducing
     # lib with a bunch of functions
-    myLib = import ./myLib/default.nix {inherit inputs;};
+    myLib = import ./lib/default.nix {inherit inputs;};
   in
     with myLib; {
       nixosConfigurations = {
@@ -77,10 +56,10 @@
       homeConfigurations = {
         # ================ Maintained home configurations ================ #
 
-        "necropanther" = mkHome "x86_64-linux" ./hosts/necropanther/home.nix;
+        necropanther = mkHome "x86_64-linux" ./hosts/necropanther/home.nix;
       };
 
-      homeManagerModules.default = ./homeManagerModules;
-      nixosModules.default = ./nixosModules;
+      homeManagerModules.default = ./home;
+      nixosModules.default = ./nixos;
     };
 }

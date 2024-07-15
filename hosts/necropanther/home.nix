@@ -9,7 +9,7 @@
 
   myHomeManager = {
     bundles.general.enable = true;
-    bundles.desktop-full.enable = true;
+    bundles.desktop.enable = true;
   };
 
   home = {
