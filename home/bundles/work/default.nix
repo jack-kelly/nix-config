@@ -7,10 +7,12 @@
       networkmanager-openvpn
       uv
 
-      claude-code
       saleae-logic
       gemini-cli
     ])
+    ++ [
+      (pkgs.callPackage ../../../pkgs/claude-code { })
+    ]
     ++ (with pkgs; [
       slack
     ]);

@@ -1,0 +1,90 @@
+{
+  lib,
+  stdenv,
+  fetchurl,
+  makeBinaryWrapper,
+  autoPatchelfHook,
+  procps,
+  ripgrep,
+  bubblewrap,
+  socat,
+  binName ? "claude",
+}:
+
+let
+  version = "2.1.156";
+
+  platformMap = {
+    "aarch64-darwin" = "darwin-arm64";
+    "x86_64-darwin" = "darwin-x64";
+    "x86_64-linux" = "linux-x64";
+    "aarch64-linux" = "linux-arm64";
+  };
+
+  platform =
+    platformMap.${stdenv.hostPlatform.system}
+      or (throw "claude-code: unsupported platform ${stdenv.hostPlatform.system}");
+
+  nativeHashes = {
+    "darwin-arm64" = "02dsl9gmh8v9g8k5ww1cd61i38wbpwidm7g404qvnp0z0c0qc7lw";
+    "darwin-x64" = "01qi6nbjqdnm49dvgk9qx1xpm20znm9i4zgc9pi28wv7jk30imnc";
+    "linux-x64" = "18zpyllari4gzfn98hk0xqcg93185h1y32wqzia5w325chicv0vd";
+    "linux-arm64" = "0y3qsnzi8phzipdn5337xx270nr9v5hbfd72k0mhxd5fjc55vnby";
+  };
+
+  nativeBinary = fetchurl {
+    urls = [
+      "https://downloads.claude.ai/claude-code-releases/${version}/${platform}/claude"
+      "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/${version}/${platform}/claude"
+    ];
+    sha256 = nativeHashes.${platform};
+  };
+in
+stdenv.mkDerivation {
+  pname = "claude-code";
+  inherit version;
+
+  dontUnpack = true;
+  dontStrip = true;
+
+  nativeBuildInputs = [
+    makeBinaryWrapper
+  ] ++ lib.optionals stdenv.hostPlatform.isElf [ autoPatchelfHook ];
+
+  installPhase = ''
+    runHook preInstall
+    mkdir -p $out/bin
+    install -m755 ${nativeBinary} $out/bin/.claude-unwrapped
+    makeBinaryWrapper $out/bin/.claude-unwrapped $out/bin/${binName} \
+      --inherit-argv0 \
+      --set DISABLE_AUTOUPDATER 1 \
+      --set DISABLE_INSTALLATION_CHECKS 1 \
+      --set USE_BUILTIN_RIPGREP 0 \
+      --prefix PATH : ${
+        lib.makeBinPath (
+          [
+            procps
+            ripgrep
+          ]
+          ++ lib.optionals stdenv.hostPlatform.isLinux [
+            bubblewrap
+            socat
+          ]
+        )
+      }
+    runHook postInstall
+  '';
+
+  meta = {
+    description = "Claude Code — AI coding assistant in your terminal";
+    homepage = "https://www.anthropic.com/claude-code";
+    license = lib.licenses.unfree;
+    platforms = [
+      "aarch64-darwin"
+      "x86_64-darwin"
+      "x86_64-linux"
+      "aarch64-linux"
+    ];
+    mainProgram = binName;
+  };
+}
