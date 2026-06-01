@@ -7,8 +7,8 @@
 {
   options.local.wallpaper = lib.mkOption {
     type = lib.types.path;
-    default = ../../../assets/wungus.png;
-    description = "Per-host wallpaper image; defaults to assets/wungus.png.";
+    default = ../../../assets/lobotomizer.png;
+    description = "Per-host wallpaper image; defaults to assets/lobotomizer.png.";
   };
 
   config.stylix = {

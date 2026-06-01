@@ -5,7 +5,7 @@
     ../bundles/desktop
     ./hardware-configuration.nix
   ];
-  networking.hostName = "ues-safe-travels";
+  networking.hostName = "giza-power-plant";
 
   services.xserver.videoDrivers = [
     "nvidia"

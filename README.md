@@ -12,9 +12,9 @@ host/
   bundles/
     global/            # Shared NixOS settings applied to all hosts
     desktop/           # Desktop environment, 1Password, etc.
-  wungus/              # Per-host NixOS config + hardware
-  ues-safe-travels/
-  hopoo/
+  lobotomizer/         # Per-host NixOS config + hardware
+  giza-power-plant/
+  beguiler/
 
 home/
   global/              # Shared Home Manager settings applied to all hosts
@@ -23,9 +23,9 @@ home/
     desktop/           # GUI apps: alacritty, flameshot, etc.
     game/              # Gaming: lutris, heroic, wine
     work/              # Work-specific packages
-  wungus.nix           # Per-host home config (imports relevant bundles)
-  ues-safe-travels.nix
-  hopoo.nix
+  lobotomizer.nix      # Per-host home config (imports relevant bundles)
+  giza-power-plant.nix
+  beguiler.nix
 
 modules/nixos/         # Reusable NixOS modules
 

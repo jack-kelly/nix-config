@@ -6,7 +6,7 @@
     ./bundles/i3
   ];
 
-  local.wallpaper = ../assets/hopoo.jpeg;
+  local.wallpaper = ../assets/beguiler.jpeg;
 
   local.i3.startupApps = [
     {

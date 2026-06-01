@@ -6,7 +6,7 @@
     ../bundles/yocto-flashing
     ./hardware-configuration.nix
   ];
-  networking.hostName = "wungus";
+  networking.hostName = "lobotomizer";
 
   boot.kernelParams = [
     # Force i915 for Intel GPU — xe claims this device ID but doesn't support it yet

@@ -13,7 +13,7 @@
     ../bundles/yocto-flashing
     ./hardware-configuration.nix
   ];
-  networking.hostName = "wax-quail";
+  networking.hostName = "ossifier";
 
   # System76 Darter Pro 10 (darp10-b) specific hardware configuration
   services.xserver.videoDrivers = [

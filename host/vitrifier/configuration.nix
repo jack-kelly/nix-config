@@ -6,7 +6,7 @@
     ./hardware-configuration.nix
   ];
 
-  networking.hostName = "bungus"; # Define your hostname.
+  networking.hostName = "vitrifier"; # Define your hostname.
   system.stateVersion = "24.05";
 
   # Jetson Linux (L4T) flash dependencies

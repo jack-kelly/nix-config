@@ -46,8 +46,8 @@
           config.allowUnfree = true;
         };
       diskoHosts = [
-        "wungus"
-        "wax-quail"
+        "lobotomizer"
+        "ossifier"
       ];
       mkHost =
         hostname:
@@ -111,11 +111,11 @@
       devShells = perSystem (pkgs: import ./shell.nix { inherit pkgs; });
 
       nixosConfigurations = nixpkgs.lib.genAttrs [
-        "wungus"
-        "wax-quail"
-        "ues-safe-travels"
-        "hopoo"
-        "bungus"
+        "lobotomizer"
+        "ossifier"
+        "giza-power-plant"
+        "beguiler"
+        "vitrifier"
       ] mkHost;
 
       # Reusable overlay so consumers get `pkgs.claude-code` everywhere.
@@ -136,7 +136,7 @@
           claudePackages = nixpkgs.lib.genAttrs (import systems) (system: {
             claude-code = (pkgsFor system).callPackage ./pkgs/claude-code { };
           });
-          isoHosts = [ "wungus" ];
+          isoHosts = [ "lobotomizer" ];
           isoPackages = nixpkgs.lib.listToAttrs (
             map (h: {
               name = "iso-${h}";
