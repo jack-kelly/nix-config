@@ -1,13 +1,24 @@
-{ pkgs, ... }:
 {
-  stylix = {
+  pkgs,
+  lib,
+  config,
+  ...
+}:
+{
+  options.local.wallpaper = lib.mkOption {
+    type = lib.types.path;
+    default = ../../../assets/wungus.png;
+    description = "Per-host wallpaper image; defaults to assets/wungus.png.";
+  };
+
+  config.stylix = {
     enable = true;
     autoEnable = true;
     polarity = "dark";
 
     base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
 
-    image = ../../../assets/wallpaper.png;
+    image = config.local.wallpaper;
 
     cursor = {
       package = pkgs.catppuccin-cursors.mochaDark;
@@ -49,5 +60,5 @@
     };
   };
 
-  xdg.configFile."wallpaper".source = ../../../assets/wallpaper.png;
+  config.xdg.configFile."wallpaper".source = config.local.wallpaper;
 }

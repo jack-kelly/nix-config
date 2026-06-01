@@ -6,6 +6,8 @@
     ./bundles/i3
   ];
 
+  local.wallpaper = ../assets/hopoo.jpeg;
+
   local.i3.startupApps = [
     {
       command = "${pkgs.obsidian}/bin/obsidian";
