@@ -49,7 +49,8 @@ stdenv.mkDerivation {
 
   nativeBuildInputs = [
     makeBinaryWrapper
-  ] ++ lib.optionals stdenv.hostPlatform.isElf [ autoPatchelfHook ];
+  ]
+  ++ lib.optionals stdenv.hostPlatform.isElf [ autoPatchelfHook ];
 
   installPhase = ''
     runHook preInstall

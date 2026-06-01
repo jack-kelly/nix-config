@@ -118,8 +118,24 @@
         "bungus"
       ] mkHost;
 
-      packages.x86_64-linux =
+      # Reusable overlay so consumers get `pkgs.claude-code` everywhere.
+      overlays.default = final: prev: {
+        claude-code = final.callPackage ./pkgs/claude-code { };
+      };
+
+      packages =
         let
+          # claude-code is unfree; allow it so `nix run`/`nix profile install`
+          # work without the consumer setting NIXPKGS_ALLOW_UNFREE.
+          pkgsFor =
+            system:
+            import nixpkgs {
+              inherit system;
+              config.allowUnfree = true;
+            };
+          claudePackages = nixpkgs.lib.genAttrs (import systems) (system: {
+            claude-code = (pkgsFor system).callPackage ./pkgs/claude-code { };
+          });
           isoHosts = [ "wungus" ];
           isoPackages = nixpkgs.lib.listToAttrs (
             map (h: {
@@ -128,7 +144,10 @@
             }) isoHosts
           );
         in
-        isoPackages;
+        claudePackages
+        // {
+          x86_64-linux = claudePackages.x86_64-linux // isoPackages;
+        };
     };
 
 }

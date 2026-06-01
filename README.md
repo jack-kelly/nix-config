@@ -28,6 +28,8 @@ home/
   hopoo.nix
 
 modules/nixos/         # Reusable NixOS modules
+
+pkgs/                  # Custom package derivations (see pkgs/README.md)
 ```
 
 ## Usage
@@ -55,3 +57,15 @@ nix flake update
 ```sh
 nix develop  # enters a shell with nix and home-manager available
 ```
+
+## Packages
+
+This flake exposes custom packages (e.g. `claude-code`) as flake outputs and via
+`overlays.default`, so they can be used standalone — no need to clone the repo:
+
+```sh
+nix run github:jack-kelly/nix-config#claude-code
+```
+
+See [`pkgs/README.md`](./pkgs/README.md) for the full list and instructions on
+consuming them from your own flake or overlay.
