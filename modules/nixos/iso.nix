@@ -13,11 +13,12 @@
   boot.loader.systemd-boot.enable = lib.mkForce false;
   boot.loader.efi.canTouchEfiVariables = lib.mkForce false;
 
-  # Disko declares fileSystems/LUKS/swap — override for ISO live boot
+  # Disko would generate fileSystems/LUKS/swap from disko.nix; disabling it
+  # leaves the live-ISO media (installation-cd-minimal.nix) to provide the root
+  # filesystem. Do NOT also force `fileSystems = {}` here — that overrides the
+  # ISO's own root mount and breaks the build ("does not specify your root file
+  # system"). hardware-configuration.nix declares no fileSystems of its own.
   disko.enableConfig = lib.mkForce false;
-  fileSystems = lib.mkForce { };
-  boot.initrd.luks.devices = lib.mkForce { };
-  swapDevices = lib.mkForce [ ];
 
   # Recovery tools
   environment.systemPackages = with pkgs; [
