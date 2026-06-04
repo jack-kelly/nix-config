@@ -2,6 +2,7 @@
 {
   imports = [
     ./alacritty.nix
+    ./firefox.nix
     ./zellij.nix
 
     # removing for now until we figure out wayland stuff :(
@@ -20,7 +21,6 @@
   home.packages =
     (with pkgs; [
       alacritty
-      firefox
       signal-desktop
       zellij
 
