@@ -1,6 +1,8 @@
-{ pkgs, ... }:
+{ pkgs, inputs, ... }:
 {
   nixpkgs.config.allowUnfree = true;
+  # Exposes `pkgs.firefox-addons.*` (built through our unfree-allowing pkgs).
+  nixpkgs.overlays = [ inputs.firefox-addons.overlays.default ];
 
   nix.settings.experimental-features = [
     "nix-command"
