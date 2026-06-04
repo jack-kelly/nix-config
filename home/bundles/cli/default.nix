@@ -4,6 +4,7 @@
 }:
 {
   imports = [
+    ./atuin.nix
     ./bat.nix
     ./broot.nix
     ./claude.nix
@@ -49,6 +50,7 @@
     p7zip
     tio
     pciutils
+    python3
     ripgrep
     socat
     tcpdump
