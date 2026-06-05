@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 {
   imports = [
     ./global
@@ -37,7 +37,9 @@
       notification = false;
     }
     {
-      command = "${pkgs.firefox}/bin/firefox";
+      # Use the policy-configured firefox from programs.firefox (session
+      # restore etc.), NOT bare pkgs.firefox which has empty policies.
+      command = "${config.programs.firefox.finalPackage}/bin/firefox";
       notification = false;
     }
     {

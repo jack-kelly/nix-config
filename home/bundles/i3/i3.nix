@@ -226,7 +226,7 @@ in
         ];
         "${ws9}" = [
           { class = "^discord$"; }
-          { class = "^Signal$"; }
+          { class = "^signal$"; }
         ];
         "${ws10}" = [
           { class = "^Spotify$"; }
