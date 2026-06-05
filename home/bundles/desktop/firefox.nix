@@ -19,6 +19,25 @@
       # policy; StartPage is.
       Homepage.StartPage = "previous-session";
 
+      # StartPage above only governs *clean* startups. `reboot` (and a Nix
+      # update-switch that swaps the running firefox binary) terminates Firefox
+      # uncleanly, so on next launch it takes the crash-recovery path instead
+      # and shows the about:sessionrestore interstitial ("Sorry. We're having
+      # trouble getting your pages back") that needs a manual "Restore Session"
+      # click. -1 disables that interstitial entirely: Firefox always silently
+      # auto-restores after a crash, and also skips the separate "session is
+      # >6h old" prompt. (See SessionStore.sys.mjs `_needsRestorePage`: the
+      # `max_resumed_crashes != -1` guard short-circuits both triggers.)
+      # Tradeoff: a tab that reliably crashes Firefox on load would loop with
+      # no UI escape hatch — recover via Safe Mode if that ever happens.
+      # browser.* prefs are settable via the Preferences policy (only
+      # app.update.{channel,lastUpdateTime,migrated} and one vpn pref are
+      # blocked), unlike browser.startup.page.
+      Preferences."browser.sessionstore.max_resumed_crashes" = {
+        Value = -1;
+        Status = "locked";
+      };
+
       # Force-install uBlock Origin and 1Password from AMO and allow both in
       # Private Windows. `force_installed` auto-enables them; `private_browsing`
       # requires Firefox >= 136 / ESR >= 128.8. These track AMO's latest (i.e.
