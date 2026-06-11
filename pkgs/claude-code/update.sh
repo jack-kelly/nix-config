@@ -15,11 +15,13 @@ latest=$(curl -sf --max-time 10 "$NPM_URL" | sed -n 's/.*"version":"\([^"]*\)".*
 [ -n "$latest" ] || { echo "failed to fetch latest version from npm" >&2; exit 1; }
 
 current=$(sed -n 's/.*version = "\([^"]*\)".*/\1/p' default.nix | head -1)
+[ -n "$current" ] || { echo "error: could not parse current version from default.nix" >&2; exit 1; }
 echo "current: $current"
 echo "latest:  $latest"
 [ "$current" = "$latest" ] && { echo "already up to date"; exit 0; }
 
-sed -i.bak "s/version = \"$current\"/version = \"$latest\"/" default.nix
+current_escaped="${current//./\\.}"
+sed -i.bak "s/version = \"$current_escaped\"/version = \"$latest\"/" default.nix
 
 for p in "${PLATFORMS[@]}"; do
   echo "prefetching $p..."
