@@ -41,6 +41,7 @@
 
     ignores = [
       ".direnv"
+      ".env"
     ];
   };
 
