@@ -9,6 +9,15 @@ let
   terminal = "alacritty";
   launcher = "rofi -show drun";
 
+  # Pause dunst while locked so notifications don't render over i3lock,
+  # then resume on unlock. i3lock must run with --nofork so the resume
+  # only fires after the lock screen exits.
+  lock = pkgs.writeShellScript "lock" ''
+    ${pkgs.dunst}/bin/dunstctl set-paused true
+    ${pkgs.i3lock}/bin/i3lock --nofork -c 1e1e2e
+    ${pkgs.dunst}/bin/dunstctl set-paused false
+  '';
+
   left = "h";
   down = "j";
   up = "k";
@@ -144,7 +153,7 @@ in
         "Print" = "exec --no-startup-id flameshot gui";
 
         # Lock
-        "${mod}+Escape" = "exec --no-startup-id i3lock -c 1e1e2e";
+        "${mod}+Escape" = "exec --no-startup-id ${lock}";
       };
 
       modes = {
@@ -261,7 +270,7 @@ in
 
         # Screen locking
         {
-          command = "xss-lock --transfer-sleep-lock -- i3lock -c 1e1e2e --nofork";
+          command = "xss-lock --transfer-sleep-lock -- ${lock}";
           notification = false;
         }
 
