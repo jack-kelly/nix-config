@@ -54,6 +54,10 @@
     cudaPackages.cudnn
     wally-cli
     keymapp
+    # System76 Open Firmware flashing: scripts/flash.sh calls `sudo efibootmgr` to set
+    # BootNext into the firmware updater. Installing it system-wide puts it on sudo's
+    # secure_path so flash.sh works without absolute store paths. See host/lobotomizer/firmware-runbook.md
+    efibootmgr
   ];
 
   services.libinput.touchpad.disableWhileTyping = true;
