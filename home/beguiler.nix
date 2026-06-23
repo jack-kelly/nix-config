@@ -31,9 +31,5 @@
       command = "${pkgs.discord}/bin/discord";
       notification = false;
     }
-    {
-      command = "${pkgs.signal-desktop}/bin/signal-desktop";
-      notification = false;
-    }
   ];
 }
