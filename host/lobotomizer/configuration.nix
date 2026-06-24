@@ -31,9 +31,18 @@
     system76.enableAll = true;
     nvidia = {
       modesetting.enable = true;
-      powerManagement.enable = true;
-      powerManagement.finegrained = true;
-      open = true;
+      # Display + suspend (settled 2026-06-24): X runs iGPU-primary with nvidia as a PRIME
+      # OFFLOAD provider (prime.offload below). The panels (eDP-1 + DP-1) are on the Intel
+      # iGPU and the docked monitors are DisplayLink/USB, so the dGPU drives no display;
+      # it stays loaded only for CUDA + `nvidia-offload`. S3 suspend is UNSUPPORTED here:
+      # the dGPU's resume is broken in every firmware/driver/PM combo tried (Xid 79 /
+      # nvKmsResume Oops / suspend hang), no driver version fixes it (open-gpu #1142, same
+      # AD107), and clean compute-only isn't possible on NixOS (hardware.nvidia is gated on
+      # `nvidia` ∈ videoDrivers, so dropping it kills CUDA). Suspend is therefore masked
+      # below — use poweroff. Full writeup: host/lobotomizer/firmware-runbook.md.
+      powerManagement.enable = false; # no VRAM-preserve suspend services (we never suspend)
+      powerManagement.finegrained = true; # RTD3: dGPU powers down when idle (battery)
+      open = false;
       nvidiaSettings = true;
       package = config.boot.kernelPackages.nvidiaPackages.latest;
       prime = {
@@ -63,6 +72,24 @@
   services.libinput.touchpad.disableWhileTyping = true;
 
   services.power-profiles-daemon.enable = false;
+
+  # S3 suspend is unsupported on this machine — the nvidia dGPU's resume is broken at every
+  # firmware/driver/PM combo and there's no clean fix (see the nvidia block above and
+  # host/lobotomizer/firmware-runbook.md). Hard-guard against accidentally triggering the
+  # broken suspend: mask the sleep targets, and make the lid/keys lock or poweroff — never suspend.
+  systemd.targets = {
+    sleep.enable = false;
+    suspend.enable = false;
+    hibernate.enable = false;
+    hybrid-sleep.enable = false;
+  };
+  services.logind.settings.Login = {
+    HandleLidSwitch = "lock";
+    HandleLidSwitchExternalPower = "lock";
+    HandleLidSwitchDocked = "ignore"; # docked w/ externals: keep working on lid close
+    HandleSuspendKey = "ignore";
+    HandlePowerKey = "poweroff"; # clean shutdown, not suspend
+  };
 
   programs.nix-ld.enable = true;
 
