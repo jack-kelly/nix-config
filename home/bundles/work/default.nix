@@ -3,6 +3,7 @@
   home.packages =
     (with pkgs; [
       awscli2
+      kcat
       openvpn
       networkmanager-openvpn
       uv
