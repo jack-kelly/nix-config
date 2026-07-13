@@ -17,7 +17,10 @@
 
     nvidia = {
       modesetting.enable = true;
-      powerManagement.enable = false;
+      # Preserve VRAM across suspend/resume (NVreg_PreserveVideoMemoryAllocations=1
+      # via nvidia-suspend/resume services). Without this the dGPU loses its VRAM
+      # contents on S3 resume, causing corruption / black screen / crashed GPU apps.
+      powerManagement.enable = true;
       powerManagement.finegrained = false;
       open = true;
       nvidiaSettings = true;

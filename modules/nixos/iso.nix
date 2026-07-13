@@ -13,6 +13,10 @@
   boot.loader.systemd-boot.enable = lib.mkForce false;
   boot.loader.efi.canTouchEfiVariables = lib.mkForce false;
 
+  # The installer image pulls in zfs support; it never imports a root zfs pool,
+  # so adopt the safer 26.11 default explicitly and silence the warning.
+  boot.zfs.forceImportRoot = false;
+
   # Disko would generate fileSystems/LUKS/swap from disko.nix; disabling it
   # leaves the live-ISO media (installation-cd-minimal.nix) to provide the root
   # filesystem. Do NOT also force `fileSystems = {}` here — that overrides the

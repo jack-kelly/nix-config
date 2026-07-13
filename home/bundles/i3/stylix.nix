@@ -60,5 +60,9 @@
     };
   };
 
+  # stylix's cursor target still relies on the deprecated implicit-enable path;
+  # set it explicitly to silence the home-manager deprecation warning.
+  config.home.pointerCursor.enable = true;
+
   config.xdg.configFile."wallpaper".source = config.local.wallpaper;
 }
