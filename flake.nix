@@ -48,6 +48,7 @@
       diskoHosts = [
         "lobotomizer"
         "ossifier"
+        "samsara"
       ];
       mkHost =
         hostname:
@@ -116,6 +117,7 @@
         "giza-power-plant"
         "beguiler"
         "vitrifier"
+        "samsara"
       ] mkHost;
 
       # Reusable overlay so consumers get `pkgs.claude-code` everywhere.
@@ -136,7 +138,10 @@
           claudePackages = nixpkgs.lib.genAttrs (import systems) (system: {
             claude-code = (pkgsFor system).callPackage ./pkgs/claude-code { };
           });
-          isoHosts = [ "lobotomizer" ];
+          isoHosts = [
+            "lobotomizer"
+            "samsara"
+          ];
           isoPackages = nixpkgs.lib.listToAttrs (
             map (h: {
               name = "iso-${h}";
