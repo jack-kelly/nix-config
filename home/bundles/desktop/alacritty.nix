@@ -9,6 +9,8 @@
 
       env = {
         "TERM" = "xterm-256color";
+        # exit the shell (and thus close alacritty) when zellij exits
+        "ZELLIJ_AUTO_EXIT" = "true";
       };
 
       window = {
