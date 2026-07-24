@@ -120,10 +120,9 @@
         "samsara"
       ] mkHost;
 
-      # Reusable overlay so consumers get `pkgs.claude-code` / `pkgs.rtk` everywhere.
+      # Reusable overlay so consumers get `pkgs.claude-code` everywhere.
       overlays.default = final: prev: {
         claude-code = final.callPackage ./pkgs/claude-code { };
-        rtk = final.callPackage ./pkgs/rtk { };
       };
 
       packages =
@@ -138,7 +137,6 @@
             };
           customPackages = nixpkgs.lib.genAttrs (import systems) (system: {
             claude-code = (pkgsFor system).callPackage ./pkgs/claude-code { };
-            rtk = (pkgsFor system).callPackage ./pkgs/rtk { };
           });
           isoHosts = [
             "lobotomizer"
