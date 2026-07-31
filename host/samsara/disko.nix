@@ -1,17 +1,18 @@
 { ... }:
 {
+  # Mirrors the existing encrypted install (adopted, not reformatted): partition
+  # UUIDs and LUKS mapper names match the disk, so nixos-rebuild switch declares
+  # the same mounts. Sizes are cosmetic unless the disk is ever reformatted.
   disko.devices.disk.main = {
     type = "disk";
-    # PCIe5 NVMe root. Confirm the device path on the machine (`lsblk`) before
-    # running disko — it may enumerate as nvme1n1 if other NVMe drives are present.
     device = "/dev/nvme0n1";
     content = {
       type = "gpt";
       partitions = {
         ESP = {
-          size = "512M";
+          size = "1G";
           type = "EF00";
-          uuid = "ccc9d4a7-6ce4-4d52-aa7e-8848f19f9323";
+          uuid = "df0f6974-901c-4297-9d3e-a122a69b61f0";
           content = {
             type = "filesystem";
             format = "vfat";
@@ -23,12 +24,11 @@
           };
         };
         luks-root = {
-          # 2TB drive: leave the tail for swap (64G) below.
-          size = "1.85T";
-          uuid = "f1b034ff-96ac-4a36-98e7-2d5c0621dd5d";
+          size = "1.75T";
+          uuid = "967b94ce-8e5c-45bc-94e5-9012104ba1bb";
           content = {
             type = "luks";
-            name = "luks-9d4d6b15-d4ea-425f-946a-1d6bb20402b6";
+            name = "luks-3366a872-4d46-4028-b0cd-d26c3ab1c6f0";
             settings.allowDiscards = true;
             passwordFile = "/tmp/luks-password";
             content = {
@@ -40,10 +40,10 @@
         };
         luks-swap = {
           size = "100%";
-          uuid = "3d24a604-ec86-423e-b941-097c9f92df6f";
+          uuid = "865ea43c-fc47-441b-b85d-9e838e97eddb";
           content = {
             type = "luks";
-            name = "luks-cbdfed52-38bc-43e0-b44d-c542439eef8b";
+            name = "luks-e338ce4a-0a62-465f-b972-d3f195eb7b13";
             settings.allowDiscards = true;
             passwordFile = "/tmp/luks-password";
             content = {
