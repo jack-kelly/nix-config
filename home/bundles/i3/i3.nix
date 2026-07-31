@@ -33,12 +33,46 @@ let
   ws8 = "8";
   ws9 = "9: chat";
   ws10 = "10: music";
+
+  outputs = config.local.i3.outputs;
 in
 {
   options.local.i3.startupApps = lib.mkOption {
     type = lib.types.listOf lib.types.attrs;
     default = [ ];
     description = "Per-host i3 autostart applications, appended to infrastructure startup.";
+  };
+
+  options.local.i3.outputs = {
+    portrait = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [
+        "DVI-I-3-2"
+        "DVI-I-1-1"
+      ];
+      description = "Outputs, in priority order, for the portrait workspaces (1-2).";
+    };
+    landscape = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [
+        "DVI-I-2-1"
+        "DVI-I-2-2"
+      ];
+      description = "Outputs, in priority order, for the landscape workspaces (3-5).";
+    };
+    chatMusic = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [ "eDP-1" ];
+      description = "Outputs, in priority order, for the chat/music workspaces (9-10).";
+    };
+    fallback = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [
+        "DP-1"
+        "eDP-1"
+      ];
+      description = "Shared fallback outputs appended to the portrait/landscape lists.";
+    };
   };
 
   config.xsession.windowManager.i3 = {
@@ -170,56 +204,31 @@ in
       workspaceOutputAssign = [
         {
           workspace = ws1;
-          output = [
-            "DVI-I-3-2"
-            "DVI-I-1-1"
-            "DP-1"
-            "eDP-1"
-          ];
+          output = outputs.portrait ++ outputs.fallback;
         }
         {
           workspace = ws2;
-          output = [
-            "DVI-I-3-2"
-            "DVI-I-1-1"
-            "DP-1"
-            "eDP-1"
-          ];
+          output = outputs.portrait ++ outputs.fallback;
         }
         {
           workspace = ws3;
-          output = [
-            "DVI-I-2-1"
-            "DVI-I-2-2"
-            "DP-1"
-            "eDP-1"
-          ];
+          output = outputs.landscape ++ outputs.fallback;
         }
         {
           workspace = ws4;
-          output = [
-            "DVI-I-2-1"
-            "DVI-I-2-2"
-            "DP-1"
-            "eDP-1"
-          ];
+          output = outputs.landscape ++ outputs.fallback;
         }
         {
           workspace = ws5;
-          output = [
-            "DVI-I-2-1"
-            "DVI-I-2-2"
-            "DP-1"
-            "eDP-1"
-          ];
+          output = outputs.landscape ++ outputs.fallback;
         }
         {
           workspace = ws9;
-          output = "eDP-1";
+          output = outputs.chatMusic;
         }
         {
           workspace = ws10;
-          output = "eDP-1";
+          output = outputs.chatMusic;
         }
       ];
 
