@@ -18,6 +18,19 @@ let
     ${pkgs.dunst}/bin/dunstctl set-paused false
   '';
 
+  # Home Firefox at login only. An `assign` would pin every later window and
+  # dialog to ws4 too, so wait for the startup window to map and move that.
+  placeFirefox = pkgs.writeShellScript "place-firefox" ''
+    i3=${config.xsession.windowManager.i3.package}/bin/i3-msg
+    for _ in $(${pkgs.coreutils}/bin/seq 60); do
+      if $i3 -t get_tree | ${pkgs.gnugrep}/bin/grep -q '"class":"firefox"'; then
+        $i3 '[class="^firefox$"] move container to workspace number ${ws4}' >/dev/null
+        exit 0
+      fi
+      ${pkgs.coreutils}/bin/sleep 1
+    done
+  '';
+
   left = "h";
   down = "j";
   up = "k";
@@ -236,11 +249,8 @@ in
         "${ws1}" = [
           { class = "^obsidian$"; }
         ];
-        "${ws4}" = [
-          { class = "^firefox$"; }
-        ];
         "${ws5}" = [
-          { class = "^Slack$"; }
+          { class = "^slack$"; }
         ];
         "${ws9}" = [
           { class = "^discord$"; }
@@ -286,6 +296,11 @@ in
         # Monitor hotplug
         {
           command = "autorandr --change";
+          notification = false;
+        }
+
+        {
+          command = "${placeFirefox}";
           notification = false;
         }
 

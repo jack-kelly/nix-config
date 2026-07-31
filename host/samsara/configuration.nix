@@ -24,6 +24,9 @@
       nvidiaSettings = true;
       package = config.boot.kernelPackages.nvidiaPackages.latest;
     };
+
+    # udev rules for the G700s receiver; solaar itself comes in via home
+    logitech.wireless.enable = true;
   };
 
   environment.systemPackages = with pkgs; [
