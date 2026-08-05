@@ -18,19 +18,6 @@ let
     ${pkgs.dunst}/bin/dunstctl set-paused false
   '';
 
-  # Home Firefox at login only. An `assign` would pin every later window and
-  # dialog to ws4 too, so wait for the startup window to map and move that.
-  placeFirefox = pkgs.writeShellScript "place-firefox" ''
-    i3=${config.xsession.windowManager.i3.package}/bin/i3-msg
-    for _ in $(${pkgs.coreutils}/bin/seq 60); do
-      if $i3 -t get_tree | ${pkgs.gnugrep}/bin/grep -q '"class":"firefox"'; then
-        $i3 '[class="^firefox$"] move container to workspace number ${ws4}' >/dev/null
-        exit 0
-      fi
-      ${pkgs.coreutils}/bin/sleep 1
-    done
-  '';
-
   left = "h";
   down = "j";
   up = "k";
@@ -48,6 +35,70 @@ let
   ws10 = "10: music";
 
   outputs = config.local.i3.outputs;
+
+  # Single source of truth for window placement. These strings come from the
+  # apps themselves and drift across updates (obsidian 1.13 renamed itself to
+  # md.Obsidian); .desktop StartupWMClass is not a usable substitute, it
+  # disagrees with the real class for slack and spotify and obsidian omits it.
+  # startupOnly windows are homed once at login instead of via `assign`, so
+  # later windows and dialogs stay where they are opened.
+  windowRules = [
+    {
+      class = "md.Obsidian";
+      workspace = ws1;
+    }
+    {
+      class = "firefox";
+      workspace = ws4;
+      startupOnly = true;
+    }
+    {
+      class = "slack";
+      workspace = ws5;
+    }
+    {
+      class = "discord";
+      workspace = ws9;
+    }
+    {
+      class = "signal";
+      workspace = ws9;
+    }
+    {
+      class = "Spotify";
+      workspace = ws10;
+    }
+  ];
+
+  classRegex = c: "^" + builtins.replaceStrings [ "." ] [ "\\." ] c + "$";
+
+  # i3 silently ignores a criterion that stops matching and drops the window on
+  # whatever workspace has focus, so say something when a class never shows up.
+  placeStartupWindows = pkgs.writeShellScript "place-startup-windows" ''
+    i3=${config.xsession.windowManager.i3.package}/bin/i3-msg
+
+    check() { # class workspace place regex
+      local class=$1 ws=$2 place=$3 regex=$4 i
+      for ((i = 0; i < 60; i++)); do
+        if $i3 -t get_tree | ${pkgs.gnugrep}/bin/grep -qF "\"class\":\"$class\""; then
+          if [ "$place" = 1 ]; then
+            $i3 "[class=\"$regex\"] move container to workspace \"$ws\"" >/dev/null
+          fi
+          return 0
+        fi
+        ${pkgs.coreutils}/bin/sleep 1
+      done
+      ${pkgs.libnotify}/bin/notify-send -u critical "i3 window rules" \
+        "No window with class '$class' appeared; its rule for workspace $ws is stale."
+    }
+
+    ${lib.concatMapStringsSep "\n" (
+      r:
+      "check ${lib.escapeShellArg r.class} ${lib.escapeShellArg r.workspace} "
+      + "${if r.startupOnly or false then "1" else "0"} ${lib.escapeShellArg (classRegex r.class)} &"
+    ) windowRules}
+    wait
+  '';
 in
 {
   options.local.i3.startupApps = lib.mkOption {
@@ -245,21 +296,9 @@ in
         }
       ];
 
-      assigns = {
-        "${ws1}" = [
-          { class = "^obsidian$"; }
-        ];
-        "${ws5}" = [
-          { class = "^slack$"; }
-        ];
-        "${ws9}" = [
-          { class = "^discord$"; }
-          { class = "^signal$"; }
-        ];
-        "${ws10}" = [
-          { class = "^Spotify$"; }
-        ];
-      };
+      assigns = lib.mapAttrs (_: rules: map (r: { class = classRegex r.class; }) rules) (
+        lib.groupBy (r: r.workspace) (builtins.filter (r: !(r.startupOnly or false)) windowRules)
+      );
 
       bars = [
         {
@@ -300,7 +339,7 @@ in
         }
 
         {
-          command = "${placeFirefox}";
+          command = "${placeStartupWindows}";
           notification = false;
         }
 
