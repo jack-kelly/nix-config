@@ -3,6 +3,7 @@
   imports = [
     ../bundles/global
     ../bundles/desktop
+    ../bundles/webcam
     ./hardware-configuration.nix
   ];
   networking.hostName = "giza-power-plant";
