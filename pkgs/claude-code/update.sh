@@ -20,20 +20,33 @@ echo "current: $current"
 echo "latest:  $latest"
 [ "$current" = "$latest" ] && { echo "already up to date"; exit 0; }
 
+tmp=$(mktemp -d)
+trap 'rm -rf "$tmp"' EXIT
+
+echo "prefetching ${#PLATFORMS[@]} platforms in parallel..."
+for p in "${PLATFORMS[@]}"; do
+  nix-prefetch-url "$BASE_URL/$latest/$p/claude" 2>/dev/null | tail -1 > "$tmp/$p" &
+done
+wait
+
+# One "platform hash" line per platform; empty means the prefetch failed.
+for p in "${PLATFORMS[@]}"; do
+  hash=$(cat "$tmp/$p")
+  [ -n "$hash" ] || { echo "failed to fetch hash for $p" >&2; exit 1; }
+  echo "$p $hash" >> "$tmp/hashes"
+  echo "  $p $hash"
+done
+
 current_escaped="${current//./\\.}"
 sed -i.bak "s/version = \"$current_escaped\"/version = \"$latest\"/" default.nix
 
-for p in "${PLATFORMS[@]}"; do
-  echo "prefetching $p..."
-  hash=$(nix-prefetch-url "$BASE_URL/$latest/$p/claude" 2>/dev/null | tail -1)
-  [ -n "$hash" ] || { echo "failed to fetch hash for $p" >&2; mv default.nix.bak default.nix; exit 1; }
-  awk -v p="$p" -v h="$hash" '
-    /nativeHashes = \{/ { in_block=1 }
-    in_block && $0 ~ "\"" p "\"" { sub(/= "[^"]*"/, "= \"" h "\"") }
-    in_block && /\};/ { in_block=0 }
-    { print }
-  ' default.nix > default.nix.tmp && mv default.nix.tmp default.nix
-done
+awk '
+  NR==FNR { h[$1]=$2; next }
+  /nativeHashes = \{/ { in_block=1 }
+  in_block { for (p in h) if ($0 ~ "\"" p "\"") sub(/= "[^"]*"/, "= \"" h[p] "\"") }
+  in_block && /\};/ { in_block=0 }
+  { print }
+' "$tmp/hashes" default.nix > default.nix.tmp && mv default.nix.tmp default.nix
 
 rm -f default.nix.bak
 echo "updated $current -> $latest"
