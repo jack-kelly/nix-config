@@ -139,6 +139,15 @@ in
     };
   };
 
+  # Naming the output beats "primary": i3bar resolves the tray when it starts,
+  # which is before `autorandr --change` has set the primary output.
+  options.local.i3.trayOutput = lib.mkOption {
+    type = lib.types.nullOr lib.types.str;
+    default = null;
+    example = "DP-4";
+    description = "Output for the i3bar tray. Null leaves i3's default (primary at bar startup).";
+  };
+
   config.xsession.windowManager.i3 = {
     enable = true;
     config = {
@@ -303,6 +312,7 @@ in
       bars = [
         {
           position = "top";
+          trayOutput = config.local.i3.trayOutput;
           statusCommand = "i3status-rs ~/.config/i3status-rust/config-default.toml";
           fonts = {
             names = [ "FiraCode Nerd Font" ];

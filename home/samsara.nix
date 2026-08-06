@@ -25,6 +25,8 @@ in
     fallback = [ ];
   };
 
+  local.i3.trayOutput = landscape;
+
   local.i3.statusBar = {
     laptop = false;
     mouseBattery = "G700s";
