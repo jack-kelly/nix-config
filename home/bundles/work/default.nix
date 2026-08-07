@@ -10,6 +10,7 @@
 
       saleae-logic
       gemini-cli
+      pi-coding-agent
     ])
     ++ [
       (pkgs.callPackage ../../../pkgs/claude-code { })
