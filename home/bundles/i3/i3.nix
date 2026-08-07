@@ -341,6 +341,15 @@ in
           command = "xss-lock --transfer-sleep-lock -- ${lock}";
           notification = false;
         }
+        # Lets apps that call the freedesktop Idle Inhibition Service (e.g.
+        # browser tabs with an active webcam call) actually suspend the X
+        # screensaver, so xss-lock doesn't lock mid-meeting despite no
+        # keyboard/mouse input. Only helps apps that call Inhibit -- native
+        # clients that don't bother (some Zoom builds, etc.) aren't covered.
+        {
+          command = "xssproxy";
+          notification = false;
+        }
 
         # Monitor hotplug
         {

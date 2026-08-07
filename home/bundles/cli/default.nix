@@ -50,6 +50,7 @@
     p7zip
     tio
     pciutils
+    psmisc
     python3
     ripgrep
     socat
