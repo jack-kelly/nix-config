@@ -1,5 +1,9 @@
 { pkgs, ... }:
 {
+  imports = [
+    ./pi.nix
+  ];
+
   home.packages =
     (with pkgs; [
       awscli2
@@ -10,7 +14,6 @@
 
       saleae-logic
       gemini-cli
-      pi-coding-agent
     ])
     ++ [
       (pkgs.callPackage ../../../pkgs/claude-code { })
