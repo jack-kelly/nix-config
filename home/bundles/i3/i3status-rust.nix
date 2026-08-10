@@ -11,8 +11,8 @@ let
   # hid-logitech-hidpp exposes no power_supply for HID++ 1.0 mice, so read it
   # from solaar. unstable's solaar 1.1.19 crashes on python 3.14; stable works.
   mouseBattery = pkgs.writeShellScript "mouse-battery" ''
-    info=$(${pkgs-stable.solaar}/bin/solaar show ${lib.escapeShellArg (toString cfg.mouseBattery)} 2>/dev/null \
-      | ${pkgs.gnugrep}/bin/grep -iE '^[[:space:]]*Battery' | head -1)
+    out=$(${pkgs-stable.solaar}/bin/solaar show ${lib.escapeShellArg (toString cfg.mouseBattery)} 2>/dev/null)
+    info=$(printf '%s' "$out" | ${pkgs.gnugrep}/bin/grep -iE '^[[:space:]]*Battery' | head -1)
 
     if [ -z "$info" ]; then
       echo '{"icon":"mouse","state":"Idle","text":"n/a"}'
@@ -30,6 +30,14 @@ let
       exit 0
     fi
 
+    # Plugging in to charge takes the wireless link offline, and the G700s
+    # reports no battery over USB, so there is no level to show here. Wired
+    # entries carry `USB id`, wireless ones `WPID`.
+    if printf '%s' "$out" | ${pkgs.gnugrep}/bin/grep -qE '^[[:space:]]*USB id'; then
+      echo '{"icon":"bat_charging","state":"Good","text":"chg"}'
+      exit 0
+    fi
+
     # No percentage available — fall back to the discrete level.
     level=$(printf '%s' "$info" | tr 'A-Z' 'a-z')
     case "$level" in
@@ -37,6 +45,7 @@ let
       *low*)              state=Warning;  text=low ;;
       *full*)             state=Good;     text=full ;;
       *good*)             state=Good;     text=good ;;
+      *offline*)          state=Idle;     text=off ;;
       *)                  state=Idle;     text="?" ;;
     esac
     printf '{"icon":"mouse","state":"%s","text":"%s"}\n' "$state" "$text"
