@@ -3,6 +3,7 @@
   imports = [
     ../bundles/global
     ../bundles/desktop
+    ../bundles/ups
     ../bundles/webcam
     ./hardware-configuration.nix
   ];

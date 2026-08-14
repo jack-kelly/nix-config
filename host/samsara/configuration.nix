@@ -11,6 +11,7 @@
     inputs.nixos-hardware.nixosModules.common-gpu-nvidia-nonprime
     ../bundles/global
     ../bundles/i3
+    ../bundles/ups
     ../bundles/webcam
     ./hardware-configuration.nix
   ];
