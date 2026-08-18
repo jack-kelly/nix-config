@@ -13,6 +13,7 @@
   environment.systemPackages = with pkgs; [
     abootimg
     binutils
+    bmaptool
     cpio
     dtc
     dosfstools
