@@ -17,6 +17,7 @@
     cpio
     dtc
     dosfstools
+    gptfdisk # sgdisk
     lbzip2
     libxml2
     lz4
