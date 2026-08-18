@@ -91,8 +91,6 @@
     HandlePowerKey = "poweroff"; # clean shutdown, not suspend
   };
 
-  programs.nix-ld.enable = true;
-
   services.tailscale.enable = true;
 
   virtualisation.docker.enable = true;

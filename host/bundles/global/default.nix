@@ -47,6 +47,9 @@
   };
 
   programs.zsh.enable = true;
+  # Lets unpatched, dynamically-linked binaries run (prebuilt dev tools,
+  # vendor SDKs, etc.) — general development need, not tied to any one host.
+  programs.nix-ld.enable = true;
 
   services.openssh.enable = true;
   services.envfs.enable = true;

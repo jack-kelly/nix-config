@@ -1,4 +1,3 @@
-{ pkgs, ... }:
 {
   imports = [
     ../bundles/global
@@ -8,30 +7,4 @@
 
   networking.hostName = "vitrifier"; # Define your hostname.
   system.stateVersion = "24.05";
-
-  # Jetson Linux (L4T) flash dependencies
-  environment.systemPackages = with pkgs; [
-    abootimg
-    binutils
-    bmaptool
-    cpio
-    dtc
-    dosfstools
-    gptfdisk # sgdisk
-    lbzip2
-    libxml2
-    lz4
-    netcat-openbsd
-    openssl
-    (python3.withPackages (p: [ p.pyyaml ]))
-    rsync
-    sshpass
-    whois
-    xmlstarlet
-    zstd
-  ];
-
-  services.nfs.server.enable = true;
-  boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
-  programs.nix-ld.enable = true;
 }
