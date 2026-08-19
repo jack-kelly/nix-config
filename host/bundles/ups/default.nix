@@ -121,17 +121,6 @@ in
   # the driver socket.
   systemd.services.upsmon.environment.NUT_STATEPATH = lib.mkForce runtimeDir;
 
-  # Upstream starts the driver as `upsdrvctl -u root start` but invokes
-  # killpower as a bare `upsdrvctl shutdown` (ups.nix:660 vs :682). Since -u is
-  # documented as "drivers started will switch from root to <user>", omitting
-  # it drops the killpower driver to NUT's compiled-in unprivileged user, which
-  # can read neither /var/lib/nut (0700 root) nor the USB device — so it dies
-  # with "insufficient permissions on everything" and the UPS is never told to
-  # cut its outlets. The OS still halts safely; what is lost is the UPS
-  # powering down and then restarting the machine when mains returns.
-  systemd.services.ups-killpower.serviceConfig.ExecStart =
-    lib.mkForce "${config.power.ups.package}/bin/upsdrvctl -u root shutdown";
-
   systemd.services.nut-upsmon-password = {
     description = "Generate the local upsd password for upsmon";
     # upsd and upsmon each declare LoadCredential= against the file, and PID1
