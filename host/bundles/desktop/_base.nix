@@ -13,6 +13,13 @@
 
   services.printing.enable = true;
 
+  # AppImages need FUSE plus an FHS sandbox; binfmt lets them be exec'd directly
+  # instead of via `appimage-run`.
+  programs.appimage = {
+    enable = true;
+    binfmt = true;
+  };
+
   services.pulseaudio.enable = false;
 
   security.rtkit.enable = true;

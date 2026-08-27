@@ -33,10 +33,6 @@
   programs = {
     steam.enable = true;
     noisetorch.enable = true;
-    appimage = {
-      binfmt = true;
-      enable = true;
-    };
   };
 
   # Workaround for noisetorch on pipewire >= 1.6.3: pipewire's filter-graph
