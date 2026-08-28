@@ -20,7 +20,15 @@
     "usb_storage"
     "sd_mod"
   ];
-  boot.initrd.kernelModules = [ ];
+  # Force-load the USB HID path at initrd start instead of waiting for udev to
+  # modprobe it on device match. udev otherwise registers usbhid ~2.4s in, which
+  # is after a keyboard on a CPU-direct port has already enumerated — leaving it
+  # unbound while the LUKS passphrase prompt is up.
+  boot.initrd.kernelModules = [
+    "xhci_pci"
+    "usbhid"
+    "hid_generic"
+  ];
   boot.kernelModules = [ "kvm-amd" ];
   boot.extraModulePackages = [ ];
 
