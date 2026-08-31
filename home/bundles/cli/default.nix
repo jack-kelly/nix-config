@@ -72,6 +72,10 @@
       nh
     ])
     ++ [
-      inputs.tailcat.packages.${pkgs.stdenv.hostPlatform.system}.default
+      # Upstream's flake bumped go.mod/go.sum without regenerating vendorHash,
+      # so its own value is stale. Override it until they fix it upstream.
+      (inputs.tailcat.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs (_: {
+        vendorHash = "sha256-EqmXVZsyuRjR4R+6V8E5pQtlAI88oskDaghfdv96sc0=";
+      }))
     ];
 }
