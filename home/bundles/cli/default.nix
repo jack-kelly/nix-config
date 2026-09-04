@@ -1,4 +1,5 @@
 {
+  inputs,
   pkgs,
   ...
 }:
@@ -22,52 +23,55 @@
     ./zsh.nix
   ];
 
-  home.packages = with pkgs; [
-    bottom
-    difftastic
-    dig
-    dnsmasq
-    eza
-    fd
-    fzf
-    gcc
-    gnumake
-    gnupg
-    htop
-    ijq
-    arp-scan
-    bandwhich
-    hping
-    fping
-    iperf3
-    just
-    jq
-    killall
-    lazygit
-    lnav
-    ngrep
-    nmap
-    p7zip
-    tio
-    pciutils
-    psmisc
-    python3
-    ripgrep
-    socat
-    tailcat
-    tcpdump
-    tree
-    trippy
-    unzip
-    usbutils
-    whois
-    wireshark-cli
-    xclip
-    xh
-    xz
-    yazi
-    nil
-    nixfmt-tree
-    nh
-  ];
+  home.packages =
+    (with pkgs; [
+      bottom
+      difftastic
+      dig
+      dnsmasq
+      eza
+      fd
+      fzf
+      gcc
+      gnumake
+      gnupg
+      htop
+      ijq
+      arp-scan
+      bandwhich
+      hping
+      fping
+      iperf3
+      just
+      jq
+      killall
+      lazygit
+      lnav
+      ngrep
+      nmap
+      p7zip
+      tio
+      pciutils
+      psmisc
+      python3
+      ripgrep
+      socat
+      tcpdump
+      tree
+      trippy
+      unzip
+      usbutils
+      whois
+      wireshark-cli
+      xclip
+      xh
+      xz
+      yazi
+      nil
+      nixfmt-tree
+      nh
+    ])
+    ++ [
+      inputs.tailcat.packages.${pkgs.stdenv.hostPlatform.system}.default
+    ];
 }
