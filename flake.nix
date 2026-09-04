@@ -14,11 +14,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
-    # netcat over Tailscale's data plane; not in nixpkgs, ships its own flake
-    tailcat = {
-      url = "github:tailscale/tailcat";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     disko = {
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
