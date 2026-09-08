@@ -9,6 +9,8 @@
     "displaylink"
   ];
 
+  services.libinput.touchpad.disableWhileTyping = true;
+
   networking.hostName = "beguiler"; # Define your hostname.
   system.stateVersion = "24.05";
 }
