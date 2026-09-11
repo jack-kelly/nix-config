@@ -38,64 +38,82 @@ let
 
   # Single source of truth for window placement. These strings come from the
   # apps themselves and drift across updates (obsidian 1.13 renamed itself to
-  # md.Obsidian); .desktop StartupWMClass is not a usable substitute, it
-  # disagrees with the real class for slack and spotify and obsidian omits it.
-  # startupOnly windows are homed once at login instead of via `assign`, so
-  # later windows and dialogs stay where they are opened.
+  # md.Obsidian, then to md.obsidian.Obsidian as of 1.13.7). All classes below
+  # are case-insensitive regexes, matched anywhere in the class string (not
+  # anchored), so a future re-capitalization or added/renamed segment doesn't
+  # silently go stale the same way; .desktop StartupWMClass is not a usable
+  # substitute, it disagrees with the real class for slack and spotify and
+  # obsidian omits it. startupOnly windows are homed once at login instead of
+  # via `assign`, so later windows and dialogs stay where they are opened.
   windowRules = [
     {
-      class = "md.Obsidian";
+      class = "[Oo]bsidian";
+      regex = true;
       workspace = ws1;
     }
     {
-      class = "firefox";
+      class = "[Ff]irefox";
+      regex = true;
       workspace = ws4;
       startupOnly = true;
     }
     {
-      class = "slack";
+      class = "[Ss]lack";
+      regex = true;
       workspace = ws5;
     }
     {
-      class = "discord";
+      class = "[Dd]iscord";
+      regex = true;
       workspace = ws9;
     }
     {
-      class = "signal";
+      class = "[Ss]ignal";
+      regex = true;
       workspace = ws9;
     }
     {
-      class = "Spotify";
+      class = "[Ss]potify";
+      regex = true;
       workspace = ws10;
     }
   ];
 
-  classRegex = c: "^" + builtins.replaceStrings [ "." ] [ "\\." ] c + "$";
+  # `class` is normally a literal class name, escaped and matched against the
+  # whole string; set `regex = true` on a rule to use `class` as-is, an
+  # extended regex matched anywhere in the string (as above), for an app
+  # whose class gains segments or changes case across versions.
+  classInner =
+    r: if r.regex or false then r.class else builtins.replaceStrings [ "." ] [ "\\." ] r.class;
+  classCriteria = r: if r.regex or false then classInner r else "^" + classInner r + "$";
+  # `[^"]*` rather than `.*` so a substring match can't run past the closing
+  # JSON quote when scanning get_tree's output below.
+  classDetectPattern = r: "[^\"]*" + classInner r + "[^\"]*";
 
   # i3 silently ignores a criterion that stops matching and drops the window on
   # whatever workspace has focus, so say something when a class never shows up.
   placeStartupWindows = pkgs.writeShellScript "place-startup-windows" ''
     i3=${config.xsession.windowManager.i3.package}/bin/i3-msg
 
-    check() { # class workspace place regex
-      local class=$1 ws=$2 place=$3 regex=$4 i
+    check() { # detectPattern workspace place criteria
+      local pattern=$1 ws=$2 place=$3 criteria=$4 i
       for ((i = 0; i < 60; i++)); do
-        if $i3 -t get_tree | ${pkgs.gnugrep}/bin/grep -qF "\"class\":\"$class\""; then
+        if $i3 -t get_tree | ${pkgs.gnugrep}/bin/grep -qE "\"class\":\"$pattern\""; then
           if [ "$place" = 1 ]; then
-            $i3 "[class=\"$regex\"] move container to workspace \"$ws\"" >/dev/null
+            $i3 "[class=\"$criteria\"] move container to workspace \"$ws\"" >/dev/null
           fi
           return 0
         fi
         ${pkgs.coreutils}/bin/sleep 1
       done
       ${pkgs.libnotify}/bin/notify-send -u critical "i3 window rules" \
-        "No window with class '$class' appeared; its rule for workspace $ws is stale."
+        "No window matching class pattern '$pattern' appeared; its rule for workspace $ws is stale."
     }
 
     ${lib.concatMapStringsSep "\n" (
       r:
-      "check ${lib.escapeShellArg r.class} ${lib.escapeShellArg r.workspace} "
-      + "${if r.startupOnly or false then "1" else "0"} ${lib.escapeShellArg (classRegex r.class)} &"
+      "check ${lib.escapeShellArg (classDetectPattern r)} ${lib.escapeShellArg r.workspace} "
+      + "${if r.startupOnly or false then "1" else "0"} ${lib.escapeShellArg (classCriteria r)} &"
     ) windowRules}
     wait
   '';
@@ -305,7 +323,7 @@ in
         }
       ];
 
-      assigns = lib.mapAttrs (_: rules: map (r: { class = classRegex r.class; }) rules) (
+      assigns = lib.mapAttrs (_: rules: map (r: { class = classCriteria r; }) rules) (
         lib.groupBy (r: r.workspace) (builtins.filter (r: !(r.startupOnly or false)) windowRules)
       );
 
