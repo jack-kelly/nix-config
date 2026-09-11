@@ -190,6 +190,10 @@ in
 
       floating.titlebar = false;
 
+      # Don't warp the cursor to the newly focused window/output on every
+      # keyboard focus change.
+      focus.mouseWarping = false;
+
       keybindings = lib.mkOptionDefault {
         # Launch
         "${mod}+Return" = "exec ${terminal}";
