@@ -42,6 +42,7 @@
       hping
       fping
       iperf3
+      jjui
       just
       jq
       killall
