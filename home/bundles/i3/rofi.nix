@@ -2,8 +2,8 @@
 {
   programs.rofi = {
     enable = true;
-    terminal = "alacritty";
-    extraConfig = {
+    settings = {
+      terminal = "alacritty";
       show-icons = true;
       icon-theme = "Papirus-Dark";
       modi = "drun,run,window";
