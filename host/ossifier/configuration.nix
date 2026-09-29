@@ -31,6 +31,10 @@
     keymapp
   ];
 
+  # Hibernate: resume from the LUKS swap partition (see disko.nix). The systemd
+  # initrd unlocks it before resume.
+  boot.resumeDevice = "/dev/mapper/luks-3ef56867-64ff-4094-976e-2188ecbf4057";
+
   services.libinput.touchpad.disableWhileTyping = true;
 
   services.power-profiles-daemon.enable = false;
