@@ -101,7 +101,8 @@ in
           }
           {
             block = "sound";
-            format = " $icon $volume ";
+            # $volume is unset while muted; fall back to text (the icon also switches to muted)
+            format = " $icon {$volume|muted} ";
           }
         ]
         ++ lib.optionals cfg.laptop [
