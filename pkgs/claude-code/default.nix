@@ -12,7 +12,7 @@
 }:
 
 let
-  version = "2.1.300";
+  version = "2.1.303";
 
   platformMap = {
     "aarch64-darwin" = "darwin-arm64";
@@ -26,10 +26,10 @@ let
       or (throw "claude-code: unsupported platform ${stdenv.hostPlatform.system}");
 
   nativeHashes = {
-    "darwin-arm64" = "1lz2b8gc1v09yxc8rxwdadaqkjby51qs13r95y533qqilv51fma7";
-    "darwin-x64" = "1csnffka6cav11y6jiccncbkyz91kqsvj6s9f38bnw1yhqvgq92q";
-    "linux-x64" = "0lsl472swylp2hdlg6jb63fnyfrh965l6g2hyiwy9bm9pfhfnkb7";
-    "linux-arm64" = "19m0by6zmzwnipi79w8ak864v4nff4cv06l3ymmr6mm15np9a8mf";
+    "darwin-arm64" = "0w4k4qq5s5rlkgl4ixn89glnzp71wd7h2s844fvqi2y07l03pnnj";
+    "darwin-x64" = "1nq6g0az81f5mlkhsx4h9aj3pc3w12q0a3ylcc4xdib86ns66pbc";
+    "linux-x64" = "0l0l34y88al64km4fbk8d1grrsdccj7jvkwm8qij8rbmazs8hn9p";
+    "linux-arm64" = "0p9i0f60ik6prcky4v0q9lj4vxhninfsrija9304lv9k4scg917k";
   };
 
   nativeBinary = fetchurl {
