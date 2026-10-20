@@ -9,7 +9,28 @@
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-  boot.kernelPackages = pkgs.linuxPackages_latest;
+  # Workarounds for nixpkgs' new per-module .cer aggregation (aggregator.nix):
+  # v4l2loopback ships its own depmod output, which collides in the buildEnv,
+  # and the system76 modules don't ship .ko.cer files, which breaks the merge.
+  boot.kernelPackages = pkgs.linuxPackages_latest.extend (
+    final: prev: {
+      v4l2loopback = prev.v4l2loopback.overrideAttrs (old: {
+        postInstall = (old.postInstall or "") + ''
+          rm -f $out/lib/modules/*/modules.*
+        '';
+      });
+      system76 = prev.system76.overrideAttrs (old: {
+        postFixup = (old.postFixup or "") + ''
+          find $out/lib/modules -name '*.ko' -exec sh -c 'touch "$1.cer"' _ {} \;
+        '';
+      });
+      system76-io = prev.system76-io.overrideAttrs (old: {
+        postFixup = (old.postFixup or "") + ''
+          find $out/lib/modules -name '*.ko' -exec sh -c 'touch "$1.cer"' _ {} \;
+        '';
+      });
+    }
+  );
 
   networking.networkmanager.enable = true;
   systemd.services.NetworkManager-wait-online.enable = false;
