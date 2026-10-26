@@ -121,6 +121,12 @@ in
   # the driver socket.
   systemd.services.upsmon.environment.NUT_STATEPATH = lib.mkForce runtimeDir;
 
+  # usbhid-ups hangs after SIGTERM at shutdown (libusb waits on a udev monitor
+  # thread that doesn't exist in the daemonized child; fixed upstream in NUT
+  # PR #3437, not yet in a release we have), so systemd waits out the default
+  # 90s before SIGKILL. Cap it until the driver is fixed.
+  systemd.services.upsdrv.serviceConfig.TimeoutStopSec = 5;
+
   systemd.services.nut-upsmon-password = {
     description = "Generate the local upsd password for upsmon";
     # upsd and upsmon each declare LoadCredential= against the file, and PID1
