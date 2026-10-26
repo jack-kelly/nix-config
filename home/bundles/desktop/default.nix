@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, pkgs-stable, ... }:
 {
   imports = [
     ./alacritty.nix
@@ -29,7 +29,8 @@
     ])
     ++ (with pkgs; [
       discord
-      obsidian
       spotify
-    ]);
+    ])
+    # unstable's electron 43 renders obsidian as a blank window
+    ++ [ pkgs-stable.obsidian ];
 }

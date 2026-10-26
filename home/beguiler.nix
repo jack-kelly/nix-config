@@ -1,4 +1,9 @@
-{ pkgs, config, ... }:
+{
+  pkgs,
+  pkgs-stable,
+  config,
+  ...
+}:
 {
   imports = [
     ./global
@@ -10,7 +15,7 @@
 
   local.i3.startupApps = [
     {
-      command = "${pkgs.obsidian}/bin/obsidian";
+      command = "${pkgs-stable.obsidian}/bin/obsidian";
       notification = false;
     }
     {
