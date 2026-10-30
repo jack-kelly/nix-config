@@ -14,5 +14,6 @@ just check    # nix flake check
 
 ## Patterns
 - Bundles are imported or not — no `mkIf` toggling within bundles
-- `pkgs-stable` (nixpkgs 26.05) is passed via `specialArgs`; use it for packages that break on unstable (obsidian: electron 43 renders a blank window)
+- `pkgs-stable` (nixpkgs 26.05) is passed via `specialArgs`; use it for packages that break on unstable
+- Obsidian runs on electron 44 via an overlay in `host/bundles/global/default.nix` (electron 43 renders a blank window)
 - Theming: stylix + Catppuccin Mocha, configured in `home/bundles/i3/stylix.nix`

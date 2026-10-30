@@ -37,7 +37,7 @@ in
 
   local.i3.startupApps = [
     {
-      command = "${pkgs-stable.obsidian}/bin/obsidian";
+      command = "${pkgs.obsidian}/bin/obsidian";
       notification = false;
     }
     {

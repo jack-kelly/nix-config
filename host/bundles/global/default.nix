@@ -2,6 +2,14 @@
 {
   nixpkgs.config.allowUnfree = true;
 
+  # electron 43 leaves obsidian as a blank window (webFrame init fails in the
+  # renderer); 44 works. Drop once the default electron fixes it.
+  nixpkgs.overlays = [
+    (final: prev: {
+      obsidian = prev.obsidian.override { electron = final.electron_44; };
+    })
+  ];
+
   nix.settings.experimental-features = [
     "nix-command"
     "flakes"
