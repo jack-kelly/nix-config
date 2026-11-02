@@ -10,8 +10,6 @@
       openvpn
       networkmanager-openvpn
       uv
-
-      saleae-logic
     ])
     ++ [
       (pkgs.callPackage ../../../pkgs/claude-code { })
@@ -21,5 +19,8 @@
       kcat
 
       slack
+
+      # unstable's saleae-logic depends on gtk2, which is marked broken
+      saleae-logic
     ]);
 }
