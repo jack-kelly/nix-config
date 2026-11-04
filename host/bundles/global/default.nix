@@ -7,6 +7,16 @@
   nixpkgs.overlays = [
     (final: prev: {
       obsidian = prev.obsidian.override { electron = final.electron_44; };
+
+      # The displaylink package dropped its `evdi` argument but the NixOS module
+      # still calls `.override { inherit evdi; }`. Accept and ignore it until
+      # the module is fixed upstream.
+      displaylink = final.lib.makeOverridable (
+        {
+          evdi ? null,
+        }:
+        prev.displaylink
+      ) { };
     })
   ];
 
