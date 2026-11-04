@@ -1,5 +1,6 @@
 {
   config,
+  lib,
   pkgs,
   inputs,
   ...
@@ -19,6 +20,10 @@
   services.xserver.videoDrivers = [
     "displaylink"
   ];
+
+  # Kernel 7.3 broke the FTCS1000 (2808:0101) touchpad (clicks work, nothing
+  # else). Stay on 7.2 until that's fixed.
+  boot.kernelPackages = lib.mkForce pkgs.linuxPackages_7_2;
 
   hardware = {
     keyboard.zsa.enable = true;
