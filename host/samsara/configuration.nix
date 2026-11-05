@@ -38,11 +38,6 @@
     logitech.wireless.enable = true;
   };
 
-  environment.systemPackages = with pkgs; [
-    cudaPackages.cudatoolkit
-    cudaPackages.cudnn
-  ];
-
   services.tailscale.enable = true;
 
   virtualisation.docker.enable = true;

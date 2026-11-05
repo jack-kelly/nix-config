@@ -59,8 +59,6 @@
       export __GLX_VENDOR_LIBRARY_NAME=nvidia
       exec "$@"
     '')
-    cudaPackages.cudatoolkit
-    cudaPackages.cudnn
     wally-cli
     keymapp
     # System76 Open Firmware flashing: scripts/flash.sh calls `sudo efibootmgr` to set
