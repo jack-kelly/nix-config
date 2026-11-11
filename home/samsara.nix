@@ -1,6 +1,5 @@
 {
   lib,
-  pkgs,
   pkgs-stable,
   ...
 }:
@@ -35,12 +34,9 @@ in
   # unstable's solaar 1.1.19 crashes on python 3.14
   home.packages = [ pkgs-stable.solaar ];
 
-  local.i3.startupApps = lib.mkMerge [
-    [ "${pkgs.slack}/bin/slack" ]
-    # mkAfter keeps this last, so focus settles on the landscape monitor
-    # rather than ws1.
-    (lib.mkAfter [ "i3-msg 'workspace number 3'" ])
-  ];
+  # mkAfter keeps this last (after the work bundle's entries too), so focus
+  # settles on the landscape monitor rather than ws1.
+  local.i3.startupApps = lib.mkAfter [ "i3-msg 'workspace number 3'" ];
 
   programs.autorandr = {
     enable = true;

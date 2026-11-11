@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ ... }:
 {
   imports = [
     ./global
@@ -13,6 +13,4 @@
     mode = "1920x1200";
     rate = "60.00";
   };
-
-  local.i3.startupApps = [ "${pkgs.slack}/bin/slack" ];
 }

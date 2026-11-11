@@ -9,6 +9,7 @@
       awscli2
       openvpn
       networkmanager-openvpn
+      slack
       uv
     ])
     ++ [
@@ -18,9 +19,11 @@
       # unstable's avro-c++ is built against fmt 12, which breaks libserdes' build
       kcat
 
-      slack
-
       # unstable's saleae-logic depends on gtk2, which is marked broken
       saleae-logic
     ]);
+
+  # This sets an i3 bundle option, so the work bundle needs the i3 bundle
+  # alongside it.
+  local.i3.startupApps = [ "${pkgs.slack}/bin/slack" ];
 }
