@@ -45,10 +45,7 @@
   # GUI for ZSA keyboards; the udev rules and wally-cli are in the global bundle.
   environment.systemPackages = [ pkgs.keymapp ];
 
-  # Firefox is managed entirely by home-manager (home/bundles/desktop/firefox.nix),
-  # which builds the wrapped package (policies, extensions) and installs the
-  # 1Password native-messaging host. Do NOT enable the NixOS-level
-  # programs.firefox here: it writes /etc/firefox/policies/policies.json, which
-  # on Linux OVERRIDES the package's distribution/policies.json — silently
-  # shadowing all of home-manager's firefox policies with an empty set.
+  # Don't enable programs.firefox here. Firefox is configured by home-manager
+  # (home/bundles/desktop/firefox.nix), and the NixOS module's
+  # /etc/firefox/policies/policies.json would override those policies.
 }

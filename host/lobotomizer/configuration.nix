@@ -25,8 +25,7 @@
     "pcie_aspm=off"
   ];
 
-  # System 76 adder-ws specific hardware configuration
-  # including nvidia and system76 firmware
+  # System76 Adder WS
   services.xserver.videoDrivers = [
     "nvidia"
     "displaylink"
@@ -36,15 +35,14 @@
     graphics.enable = true;
     nvidia = {
       modesetting.enable = true;
-      # Display + suspend (settled 2026-06-24): X runs iGPU-primary with nvidia as a PRIME
-      # OFFLOAD provider (prime.offload below). The panels (eDP-1 + DP-1) are on the Intel
-      # iGPU and the docked monitors are DisplayLink/USB, so the dGPU drives no display;
-      # it stays loaded only for CUDA + `nvidia-offload`. S3 suspend is UNSUPPORTED here:
-      # the dGPU's resume is broken in every firmware/driver/PM combo tried (Xid 79 /
-      # nvKmsResume Oops / suspend hang), no driver version fixes it (open-gpu #1142, same
-      # AD107), and clean compute-only isn't possible on NixOS (hardware.nvidia is gated on
-      # `nvidia` ∈ videoDrivers, so dropping it kills CUDA). Suspend is therefore masked
-      # below — use poweroff.
+      # The dGPU drives no display (the panels are on the Intel iGPU, the docked
+      # monitors are DisplayLink), so it is a PRIME offload provider kept only for
+      # CUDA and `nvidia-offload`. It has to stay in videoDrivers: hardware.nvidia
+      # is gated on that.
+      #
+      # S3 resume is broken on this dGPU with every firmware/driver/PM combination
+      # tried (Xid 79, nvKmsResume oops, hangs; open-gpu #1142, same AD107), so
+      # suspend is masked further down. Use poweroff.
       powerManagement.enable = false; # no VRAM-preserve suspend services (we never suspend)
       powerManagement.finegrained = true; # RTD3: dGPU powers down when idle (battery)
       open = false;
@@ -72,10 +70,8 @@
 
   services.power-profiles-daemon.enable = false;
 
-  # S3 suspend is unsupported on this machine — the nvidia dGPU's resume is broken at every
-  # firmware/driver/PM combo and there's no clean fix (see the nvidia block above).
-  # Hard-guard against accidentally triggering the broken suspend: mask the sleep
-  # targets, and make the lid/keys lock or poweroff — never suspend.
+  # Suspend is broken here (see the nvidia block above), so make it impossible:
+  # mask the sleep targets and have the lid and keys lock or power off instead.
   systemd.targets = {
     sleep.enable = false;
     suspend.enable = false;

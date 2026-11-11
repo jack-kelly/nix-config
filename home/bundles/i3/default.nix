@@ -19,11 +19,7 @@
       # Utilities
       feh
       xss-lock
-      # Bridges org.freedesktop.ScreenSaver Inhibit calls (browsers hold one
-      # open during an active webcam call) to XScreenSaverSuspend, so xss-lock
-      # doesn't fire while a call is inhibiting the screensaver. See i3.nix
-      # for why this is needed and its coverage caveats.
-      xssproxy
+      xssproxy # keeps xss-lock from firing mid-call; see i3.nix
       arandr
       playerctl
       brightnessctl

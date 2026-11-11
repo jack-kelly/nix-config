@@ -49,16 +49,12 @@ let
     "${config.programs.firefox.finalPackage}/bin/firefox"
   ];
 
-  # Single source of truth for window placement. These strings come from the
-  # apps themselves and drift across updates (obsidian 1.13 renamed itself to
-  # md.Obsidian, then to md.obsidian.Obsidian as of 1.13.7). Each `class` is
-  # an extended regex with both capitalizations spelled out, matched anywhere
-  # in the class string (not anchored), so a future re-capitalization or
-  # added/renamed segment doesn't silently go stale the same way; .desktop
-  # StartupWMClass is not a usable substitute, it disagrees with the real
-  # class for slack and spotify and obsidian omits it. startupOnly windows are
-  # homed once at login instead of via `assign`, so later windows and dialogs
-  # stay where they are opened.
+  # Single source of truth for window placement. Class strings come from the
+  # apps and drift across updates (obsidian has renamed itself twice), so each
+  # `class` is an unanchored regex with both capitalizations spelled out.
+  # .desktop StartupWMClass is no substitute: it is wrong for slack and
+  # spotify and missing for obsidian. startupOnly windows are homed once at
+  # login rather than via `assign`, so later windows and dialogs stay put.
   windowRules = [
     {
       class = "[Oo]bsidian";
