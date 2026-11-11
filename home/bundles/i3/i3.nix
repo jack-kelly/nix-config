@@ -36,6 +36,19 @@ let
 
   outputs = config.local.i3.outputs;
 
+  # Apps every i3 host opens at login (all installed by the desktop bundle).
+  # Hosts and other bundles append their own through local.i3.startupApps.
+  startupApps = [
+    "${pkgs.obsidian}/bin/obsidian"
+    "${pkgs.discord}/bin/discord"
+    "${pkgs.signal-desktop}/bin/signal-desktop"
+    "${pkgs.spotify}/bin/spotify"
+    "i3-msg 'workspace 3; exec ${pkgs.alacritty}/bin/alacritty'"
+    # Use the policy-configured firefox from programs.firefox (session
+    # restore etc.), NOT bare pkgs.firefox which has empty policies.
+    "${config.programs.firefox.finalPackage}/bin/firefox"
+  ];
+
   # Single source of truth for window placement. These strings come from the
   # apps themselves and drift across updates (obsidian 1.13 renamed itself to
   # md.Obsidian, then to md.obsidian.Obsidian as of 1.13.7). Each `class` is
@@ -108,9 +121,10 @@ let
 in
 {
   options.local.i3.startupApps = lib.mkOption {
-    type = lib.types.listOf lib.types.attrs;
+    type = lib.types.listOf lib.types.str;
     default = [ ];
-    description = "Per-host i3 autostart applications, appended to infrastructure startup.";
+    example = lib.literalExpression ''[ "''${pkgs.slack}/bin/slack" ]'';
+    description = "Extra commands to run at i3 startup, after the apps common to every host.";
   };
 
   options.local.i3.outputs = {
@@ -384,7 +398,10 @@ in
           notification = false;
         }
       ]
-      ++ config.local.i3.startupApps;
+      ++ map (command: {
+        inherit command;
+        notification = false;
+      }) (startupApps ++ config.local.i3.startupApps);
     };
   };
 }

@@ -1,7 +1,7 @@
 {
+  lib,
   pkgs,
   pkgs-stable,
-  config,
   ...
 }:
 let
@@ -35,40 +35,11 @@ in
   # unstable's solaar 1.1.19 crashes on python 3.14
   home.packages = [ pkgs-stable.solaar ];
 
-  local.i3.startupApps = [
-    {
-      command = "${pkgs.obsidian}/bin/obsidian";
-      notification = false;
-    }
-    {
-      command = "${pkgs.discord}/bin/discord";
-      notification = false;
-    }
-    {
-      command = "${pkgs.signal-desktop}/bin/signal-desktop";
-      notification = false;
-    }
-    {
-      command = "${pkgs.spotify}/bin/spotify";
-      notification = false;
-    }
-    {
-      command = "i3-msg 'workspace 3; exec ${pkgs.alacritty}/bin/alacritty'";
-      notification = false;
-    }
-    {
-      command = "${config.programs.firefox.finalPackage}/bin/firefox";
-      notification = false;
-    }
-    {
-      command = "${pkgs.slack}/bin/slack";
-      notification = false;
-    }
-    # last, so focus settles on the landscape monitor rather than ws1
-    {
-      command = "i3-msg 'workspace number 3'";
-      notification = false;
-    }
+  local.i3.startupApps = lib.mkMerge [
+    [ "${pkgs.slack}/bin/slack" ]
+    # mkAfter keeps this last, so focus settles on the landscape monitor
+    # rather than ws1.
+    (lib.mkAfter [ "i3-msg 'workspace number 3'" ])
   ];
 
   programs.autorandr = {
