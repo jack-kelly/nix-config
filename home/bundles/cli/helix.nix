@@ -37,7 +37,20 @@
         }
         {
           name = "nix";
-          formatter.command = "nixfmt";
+          # Same formatter as `just fmt`: treefmt from nixfmt-tree (cli
+          # bundle), which is the only nix formatter on PATH. In stdin mode
+          # the file name only selects the formatter, and the tree root has
+          # to be given because the wrapper's config lives in the store.
+          formatter = {
+            command = "treefmt";
+            args = [
+              "--quiet"
+              "--tree-root"
+              "."
+              "--stdin"
+              "stdin.nix"
+            ];
+          };
           auto-format = true;
         }
       ];
