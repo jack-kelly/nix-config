@@ -38,57 +38,45 @@ let
 
   # Single source of truth for window placement. These strings come from the
   # apps themselves and drift across updates (obsidian 1.13 renamed itself to
-  # md.Obsidian, then to md.obsidian.Obsidian as of 1.13.7). All classes below
-  # are case-insensitive regexes, matched anywhere in the class string (not
-  # anchored), so a future re-capitalization or added/renamed segment doesn't
-  # silently go stale the same way; .desktop StartupWMClass is not a usable
-  # substitute, it disagrees with the real class for slack and spotify and
-  # obsidian omits it. startupOnly windows are homed once at login instead of
-  # via `assign`, so later windows and dialogs stay where they are opened.
+  # md.Obsidian, then to md.obsidian.Obsidian as of 1.13.7). Each `class` is
+  # an extended regex with both capitalizations spelled out, matched anywhere
+  # in the class string (not anchored), so a future re-capitalization or
+  # added/renamed segment doesn't silently go stale the same way; .desktop
+  # StartupWMClass is not a usable substitute, it disagrees with the real
+  # class for slack and spotify and obsidian omits it. startupOnly windows are
+  # homed once at login instead of via `assign`, so later windows and dialogs
+  # stay where they are opened.
   windowRules = [
     {
       class = "[Oo]bsidian";
-      regex = true;
       workspace = ws1;
     }
     {
       class = "[Ff]irefox";
-      regex = true;
       workspace = ws4;
       startupOnly = true;
     }
     {
       class = "[Ss]lack";
-      regex = true;
       workspace = ws5;
     }
     {
       class = "[Dd]iscord";
-      regex = true;
       workspace = ws9;
     }
     {
       class = "[Ss]ignal";
-      regex = true;
       workspace = ws9;
     }
     {
       class = "[Ss]potify";
-      regex = true;
       workspace = ws10;
     }
   ];
 
-  # `class` is normally a literal class name, escaped and matched against the
-  # whole string; set `regex = true` on a rule to use `class` as-is, an
-  # extended regex matched anywhere in the string (as above), for an app
-  # whose class gains segments or changes case across versions.
-  classInner =
-    r: if r.regex or false then r.class else builtins.replaceStrings [ "." ] [ "\\." ] r.class;
-  classCriteria = r: if r.regex or false then classInner r else "^" + classInner r + "$";
   # `[^"]*` rather than `.*` so a substring match can't run past the closing
   # JSON quote when scanning get_tree's output below.
-  classDetectPattern = r: "[^\"]*" + classInner r + "[^\"]*";
+  classDetectPattern = r: "[^\"]*" + r.class + "[^\"]*";
 
   # i3 silently ignores a criterion that stops matching and drops the window on
   # whatever workspace has focus, so say something when a class never shows up.
@@ -113,7 +101,7 @@ let
     ${lib.concatMapStringsSep "\n" (
       r:
       "check ${lib.escapeShellArg (classDetectPattern r)} ${lib.escapeShellArg r.workspace} "
-      + "${if r.startupOnly or false then "1" else "0"} ${lib.escapeShellArg (classCriteria r)} &"
+      + "${if r.startupOnly or false then "1" else "0"} ${lib.escapeShellArg r.class} &"
     ) windowRules}
     wait
   '';
@@ -327,7 +315,7 @@ in
         }
       ];
 
-      assigns = lib.mapAttrs (_: rules: map (r: { class = classCriteria r; }) rules) (
+      assigns = lib.mapAttrs (_: rules: map (r: { inherit (r) class; }) rules) (
         lib.groupBy (r: r.workspace) (builtins.filter (r: !(r.startupOnly or false)) windowRules)
       );
 
