@@ -67,7 +67,4 @@
     vim
     wget
   ];
-  environment.shells = with pkgs; [
-    zsh
-  ];
 }
