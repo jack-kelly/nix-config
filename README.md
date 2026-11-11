@@ -5,8 +5,8 @@ NixOS and Home Manager configurations for my machines.
 ## Structure
 
 ```
-flake.nix              # Entry point — defines all hosts via mkHost, recovery ISOs via mkIso
-justfile               # Task runner (build, switch, update, fmt, check, iso, …)
+flake.nix              # Entry point — defines all hosts via mkHost
+justfile               # Task runner (build, switch, update, fmt, check, install, …)
 shell.nix              # Dev shell for bootstrapping nix + home-manager
 
 host/
@@ -35,8 +35,6 @@ home/
   giza-power-plant.nix
   beguiler.nix
   vitrifier.nix
-
-modules/nixos/         # Reusable NixOS modules (e.g. iso.nix)
 
 assets/                # Wallpapers and other static assets
 
@@ -82,7 +80,26 @@ just update        # nix flake update
 nix develop  # enters a shell with nix and home-manager available
 ```
 
-A recovery ISO can be built for ISO-enabled hosts with `just iso <host>`.
+### Reinstall a host
+
+Hosts with a `disko.nix` can be wiped and reinstalled from another machine with
+[`nixos-anywhere`](https://github.com/nix-community/nixos-anywhere):
+
+1. Boot the target from a stock NixOS installer image and get it on the network.
+2. On the target, set a root password (`sudo passwd`) and note its IP (`ip a`).
+3. From a working checkout of this repo:
+
+   ```sh
+   just install <hostname> <target-ip>
+   ```
+
+This **erases the target's disk**: it partitions and formats per the host's
+`disko.nix` (prompting for the LUKS passphrase), installs the flake's
+configuration, and reboots. `jack` has no declared password, so after first boot
+SSH in with the authorized key and set one before logging in at the console.
+
+Hosts without a `disko.nix` are installed the manual way: stock installer, then
+`just switch` after first boot.
 
 ## Packages
 

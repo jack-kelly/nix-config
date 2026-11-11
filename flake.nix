@@ -85,33 +85,6 @@
             )
           ];
         };
-      mkIso =
-        hostname:
-        nixpkgs.lib.nixosSystem {
-          specialArgs = { inherit inputs outputs; };
-          modules = [
-            ./host/${hostname}/configuration.nix
-            ./host/${hostname}/disko.nix
-            disko.nixosModules.disko
-            stylix.nixosModules.stylix
-            home-manager.nixosModules.home-manager
-            ./modules/nixos/iso.nix
-            (
-              { config, ... }:
-              {
-                home-manager = {
-                  extraSpecialArgs = {
-                    inherit flakePath inputs outputs;
-                    pkgs-stable = pkgs-stable config.nixpkgs.hostPlatform.system;
-                  };
-                  useGlobalPkgs = true;
-                  users.jack = import ./home/${hostname}.nix;
-                  sharedModules = [ stylix.homeModules.stylix ];
-                };
-              }
-            )
-          ];
-        };
     in
     {
       # Devshell for bootstrapping, accessible through 'nix develop'
@@ -141,24 +114,10 @@
               inherit system;
               config.allowUnfree = true;
             };
-          customPackages = nixpkgs.lib.genAttrs (import systems) (system: {
-            claude-code = (pkgsFor system).callPackage ./pkgs/claude-code { };
-          });
-          isoHosts = [
-            "lobotomizer"
-            "samsara"
-          ];
-          isoPackages = nixpkgs.lib.listToAttrs (
-            map (h: {
-              name = "iso-${h}";
-              value = (mkIso h).config.system.build.isoImage;
-            }) isoHosts
-          );
         in
-        customPackages
-        // {
-          x86_64-linux = customPackages.x86_64-linux // isoPackages;
-        };
+        nixpkgs.lib.genAttrs (import systems) (system: {
+          claude-code = (pkgsFor system).callPackage ./pkgs/claude-code { };
+        });
     };
 
 }
