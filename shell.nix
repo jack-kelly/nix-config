@@ -1,9 +1,7 @@
-# Shell for bootstrapping flake-enabled nix and home-manager
-# You can enter it through 'nix develop' or (legacy) 'nix-shell'
+# Shell for bootstrapping flake-enabled nix and home-manager.
+# Flake-only: enter it with 'nix develop' (see devShells in flake.nix).
 
-{
-  pkgs ? (import ./nixpkgs.nix) { },
-}:
+{ pkgs }:
 {
   default = pkgs.mkShell {
     # Enable experimental features without having to specify the argument

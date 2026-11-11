@@ -114,8 +114,7 @@
         };
     in
     {
-      # Devshell for bootstrapping
-      # Acessible through 'nix develop' or 'nix-shell' (legacy)
+      # Devshell for bootstrapping, accessible through 'nix develop'
       devShells = perSystem (pkgs: import ./shell.nix { inherit pkgs; });
 
       nixosConfigurations = nixpkgs.lib.genAttrs [
