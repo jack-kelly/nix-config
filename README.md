@@ -27,7 +27,6 @@ home/
     cli/               # CLI tools: git, helix, zsh, starship, zellij, etc.
     desktop/           # GUI apps: alacritty, flameshot, etc.
     i3/                # i3 wm, rofi, picom, autorandr, status bar, stylix theming
-    game/              # Gaming: lutris, heroic, wine
     nvidia/            # NVIDIA-specific home config
     work/              # Work-specific packages
   lobotomizer.nix      # Per-host home config (imports relevant bundles)

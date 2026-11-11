@@ -9,7 +9,7 @@ just check    # nix flake check
 
 ## Layout
 - `host/<name>/` — NixOS system config; `host/bundles/` — shared system modules
-- `home/<name>.nix` — home-manager entrypoint; `home/bundles/<bundle>/` — feature groups (cli, desktop, i3, work, game)
+- `home/<name>.nix` — home-manager entrypoint; `home/bundles/<bundle>/` — feature groups (cli, desktop, i3, nvidia, work)
 - Individual program configs live as separate files inside each bundle dir (e.g. `home/bundles/cli/helix.nix`)
 
 ## Patterns
