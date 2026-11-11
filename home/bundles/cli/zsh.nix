@@ -9,7 +9,6 @@
     shellAliases = {
       cat = "bat";
       ll = "ls -l";
-      update = "sudo nixos-rebuild switch --flake .#$(hostname)";
     };
     history = {
       size = 100000;
