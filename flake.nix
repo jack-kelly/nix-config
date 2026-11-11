@@ -2,7 +2,6 @@
   description = "My programs and configurations";
 
   inputs = {
-    # Specify the source of Home Manager and Nixpkgs.
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-26.05";
     home-manager = {
@@ -15,8 +14,6 @@
     };
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     systems.url = "github:nix-systems/default";
-    # Upstream builds Go 1.27.1 from source until nixpkgs-unstable's
-    # go_1_27 catches up, so this works against our nixpkgs pin.
     tailcat = {
       url = "github:tailscale/tailcat";
       inputs.nixpkgs.follows = "nixpkgs";

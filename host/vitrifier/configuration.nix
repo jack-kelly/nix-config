@@ -5,6 +5,6 @@
     ./hardware-configuration.nix
   ];
 
-  networking.hostName = "vitrifier"; # Define your hostname.
+  networking.hostName = "vitrifier";
   system.stateVersion = "24.05";
 }

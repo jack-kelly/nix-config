@@ -9,6 +9,6 @@
     "displaylink"
   ];
 
-  networking.hostName = "beguiler"; # Define your hostname.
+  networking.hostName = "beguiler";
   system.stateVersion = "24.05";
 }
