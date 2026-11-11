@@ -4,9 +4,6 @@
     ./alacritty.nix
     ./firefox.nix
     ./zellij.nix
-
-    # removing for now until we figure out wayland stuff :(
-    # ./flameshot.nix
   ];
 
   systemd.user.targets.tray = {
