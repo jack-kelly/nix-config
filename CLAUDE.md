@@ -3,17 +3,16 @@
 ## Commands
 ```bash
 just switch   # build & activate
-just fmt      # nixfmt .
+just fmt      # treefmt (nixfmt)
 just check    # nix flake check
 ```
 
 ## Layout
 - `host/<name>/` — NixOS system config; `host/bundles/` — shared system modules
-- `home/<name>.nix` — home-manager entrypoint; `home/bundles/<bundle>/` — feature groups (cli, desktop, i3, nvidia, work)
+- `home/<name>.nix` — home-manager entrypoint; `home/bundles/<bundle>/` — feature groups
 - Individual program configs live as separate files inside each bundle dir (e.g. `home/bundles/cli/helix.nix`)
 
 ## Patterns
 - Bundles are imported or not — no `mkIf` toggling within bundles
-- `pkgs-stable` (nixpkgs 26.05) is a module argument in both NixOS and home-manager modules; use it for packages that break on unstable
-- Obsidian runs on electron 44 via an overlay in `host/bundles/global/default.nix` (electron 43 renders a blank window)
-- Theming: stylix + Catppuccin Mocha, configured in `home/bundles/i3/stylix.nix`
+- `pkgs-stable` (nixpkgs 26.05) is a module argument in both NixOS and home-manager modules; use it for packages that break on unstable, with a comment saying why
+- A new file is invisible to the flake until jj/git has snapshotted it (run `jj st`)
