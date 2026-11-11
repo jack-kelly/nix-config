@@ -35,6 +35,14 @@
           };
         };
       }
+      {
+        condition = "gitdir:~/code/github.com/jack-utilidata/";
+        contents = {
+          user = {
+            email = "jkelly@utilidata.com";
+          };
+        };
+      }
     ];
 
     lfs.enable = true;
