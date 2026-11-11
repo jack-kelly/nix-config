@@ -5,59 +5,52 @@ NixOS and Home Manager configurations for my machines.
 ## Structure
 
 ```
-flake.nix              # Entry point — defines all hosts via mkHost
-justfile               # Task runner (build, switch, update, fmt, check, install, …)
-shell.nix              # Dev shell for bootstrapping nix + home-manager
+flake.nix              # Entry point: builds every host with mkHost
+justfile               # Task runner (run `just` to list recipes)
 
 host/
+  <hostname>/          # NixOS config + hardware (+ disko.nix where used)
   bundles/
-    global/            # Shared NixOS settings applied to all hosts
-    desktop/           # Desktop environment, 1Password, etc.
-    i3/                # i3 / X11 system-level bits
-    yocto-flashing/    # Host tooling for flashing Yocto images (udisks2, udev rules)
-  lobotomizer/         # Per-host NixOS config + hardware (+ disko.nix where used)
-  ossifier/
-  giza-power-plant/
-  beguiler/
-  vitrifier/
+    global/            # Applied to every host
+    desktop/           # Base for graphical hosts: X, audio, 1Password
+    i3/                # i3 on top of desktop
+    work/              # Tailscale, Docker
+    ups/               # NUT for the CyberPower UPS
+    webcam/            # v4l2loopback, phone-as-webcam
+    yocto-flashing/    # Tooling for flashing Yocto/Jetson images
 
 home/
-  global/              # Shared Home Manager settings applied to all hosts
+  <hostname>.nix       # Home Manager entrypoint; imports the bundles it wants
+  global/              # Applied to every host (pulls in cli)
   bundles/
-    cli/               # CLI tools: git, helix, zsh, starship, zellij, etc.
-    desktop/           # GUI apps: alacritty, flameshot, etc.
-    i3/                # i3 wm, rofi, picom, autorandr, status bar, stylix theming
-    nvidia/            # NVIDIA-specific home config
-    work/              # Work-specific packages
-  lobotomizer.nix      # Per-host home config (imports relevant bundles)
-  ossifier.nix
-  giza-power-plant.nix
-  beguiler.nix
-  vitrifier.nix
+    cli/               # Shell, editor, git/jj, CLI tools
+    desktop/           # GUI apps: alacritty, firefox, zellij
+    i3/                # i3, status bar, rofi, picom, autorandr, stylix theming
+    nvidia/            # GPU monitoring
+    work/              # Work packages
 
-assets/                # Wallpapers and other static assets
-
-pkgs/                  # Custom package derivations (see pkgs/README.md)
+pkgs/                  # Custom packages (see pkgs/README.md)
+assets/                # Wallpapers
 ```
 
 ## Usage
 
-Common tasks are wrapped in the [`justfile`](./justfile), which drives
-[`nh`](https://github.com/viperML/nh) under the hood. Run `just` (or
-`just --list`) to see every recipe; the most common ones:
+The [`justfile`](./justfile) wraps [`nh`](https://github.com/viperML/nh) and
+targets the current hostname:
 
 ```sh
-just switch        # build & activate the current host
-just build         # build only, no activation
+just switch        # build & activate
+just build         # build only
 just test          # activate without adding a boot entry
-just update-switch # update flake inputs, then switch
-just fmt           # format all files (treefmt)
+just update        # nix flake update
+just update-switch # update, then switch
+just fmt           # format (treefmt)
 just check         # nix flake check
-just hosts         # list available hosts
 ```
 
-The recipes target `$(hostname)` automatically. To act on a different host,
-invoke `nh` directly, e.g. `nh os switch . --hostname <hostname>`.
+For another host, call `nh` directly: `nh os switch . --hostname <hostname>`.
+
+`nix develop` gives a bootstrap shell with nix, git and just.
 
 ### Add a new host
 
@@ -65,18 +58,6 @@ invoke `nh` directly, e.g. `nh os switch . --hostname <hostname>`.
    (plus `disko.nix` if it uses disko; it is picked up automatically)
 2. Create `home/<hostname>.nix` importing the bundles you want
 3. Add the hostname to the `nixosConfigurations` list in `flake.nix`
-
-### Update dependencies
-
-```sh
-just update        # nix flake update
-```
-
-### Bootstrap on a fresh install
-
-```sh
-nix develop  # enters a shell with nix and home-manager available
-```
 
 ### Reinstall a host
 
@@ -101,12 +82,11 @@ Hosts without a `disko.nix` are installed the manual way: stock installer, then
 
 ## Packages
 
-This flake exposes custom packages (e.g. `claude-code`) as flake outputs and via
-`overlays.default`, so they can be used standalone — no need to clone the repo:
+Custom packages (e.g. `claude-code`) are exposed as flake outputs and through
+`overlays.default`:
 
 ```sh
 nix run github:jack-kelly/nix-config#claude-code
 ```
 
-See [`pkgs/README.md`](./pkgs/README.md) for the full list and instructions on
-consuming them from your own flake or overlay.
+See [`pkgs/README.md`](./pkgs/README.md) for using them from another flake.
