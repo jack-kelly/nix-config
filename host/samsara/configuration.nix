@@ -12,6 +12,7 @@
     ../bundles/i3
     ../bundles/ups
     ../bundles/webcam
+    ../bundles/work
     ./hardware-configuration.nix
   ];
   networking.hostName = "samsara";
@@ -30,9 +31,7 @@
     logitech.wireless.enable = true;
   };
 
-  services.tailscale.enable = true;
-
-  virtualisation.docker.enable = true;
+  # This one runs containers unattended, so don't wait for socket activation.
   virtualisation.docker.enableOnBoot = true;
 
   # Running lots of containers exhausts the default ARP/neighbor table

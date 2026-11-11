@@ -11,6 +11,7 @@
     inputs.nixos-hardware.nixosModules.common-pc-laptop
     ../bundles/global
     ../bundles/i3
+    ../bundles/work
     ../bundles/yocto-flashing
     ./hardware-configuration.nix
   ];
@@ -37,11 +38,6 @@
   services.libinput.touchpad.disableWhileTyping = true;
 
   services.power-profiles-daemon.enable = false;
-
-  services.tailscale.enable = true;
-
-  virtualisation.docker.enable = true;
-  virtualisation.docker.enableOnBoot = false;
 
   system.stateVersion = "25.11";
 }

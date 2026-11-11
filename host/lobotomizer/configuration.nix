@@ -3,6 +3,7 @@
   imports = [
     ../bundles/global
     ../bundles/i3
+    ../bundles/work
     ../bundles/yocto-flashing
     ./hardware-configuration.nix
   ];
@@ -85,11 +86,6 @@
     HandleSuspendKey = "ignore";
     HandlePowerKey = "poweroff"; # clean shutdown, not suspend
   };
-
-  services.tailscale.enable = true;
-
-  virtualisation.docker.enable = true;
-  virtualisation.docker.enableOnBoot = false;
 
   system.stateVersion = "24.11";
 }
