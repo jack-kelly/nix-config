@@ -65,8 +65,6 @@
     efibootmgr
   ];
 
-  services.libinput.touchpad.disableWhileTyping = true;
-
   services.power-profiles-daemon.enable = false;
 
   # S3 suspend is unsupported on this machine — the nvidia dGPU's resume is broken at every

@@ -11,6 +11,9 @@
     variant = "";
   };
 
+  # Only affects machines that have a touchpad.
+  services.libinput.touchpad.disableWhileTyping = true;
+
   services.printing.enable = true;
 
   # AppImages need FUSE plus an FHS sandbox; binfmt lets them be exec'd directly
