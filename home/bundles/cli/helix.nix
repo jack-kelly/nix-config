@@ -13,14 +13,13 @@
     };
 
     languages = {
+      # ruff-lsp is gone from nixpkgs; its replacement is built into ruff
+      # itself. The old --ignore=E203,W503 isn't carried over: ruff doesn't
+      # implement W503 and leaves E203 off by default.
       language-server.ruff = {
-        command = "ruff-lsp";
-        config.settings = {
-          lineLength = 79;
-          args = [
-            "--ignore=E203,W503"
-          ];
-        };
+        command = "ruff";
+        args = [ "server" ];
+        config.settings.lineLength = 79;
       };
 
       language-server.pylsp.config.pylsp.plugins = {
