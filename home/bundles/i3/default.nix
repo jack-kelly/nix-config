@@ -34,4 +34,14 @@
     ];
 
   services.dunst.enable = true;
+
+  # i3 runs `autorandr --change` at startup (see i3.nix). Profiles are
+  # per-host: laptops import ./autorandr.nix, desktops define their own.
+  programs.autorandr = {
+    enable = true;
+    hooks.postswitch = {
+      "restart-i3" = "i3-msg restart";
+      "reset-wallpaper" = "feh --bg-fill ~/.config/wallpaper";
+    };
+  };
 }
