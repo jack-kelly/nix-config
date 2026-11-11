@@ -50,11 +50,6 @@
           inherit system;
           config.allowUnfree = true;
         };
-      diskoHosts = [
-        "lobotomizer"
-        "ossifier"
-        "samsara"
-      ];
       mkHost =
         hostname:
         nixpkgs.lib.nixosSystem {
@@ -65,7 +60,8 @@
             stylix.nixosModules.stylix
             home-manager.nixosModules.home-manager
           ]
-          ++ nixpkgs.lib.optional (builtins.elem hostname diskoHosts) ./host/${hostname}/disko.nix
+          # Hosts with a declarative disk layout keep it next to their config.
+          ++ nixpkgs.lib.optional (builtins.pathExists ./host/${hostname}/disko.nix) ./host/${hostname}/disko.nix
           ++ [
             (
               { config, ... }:

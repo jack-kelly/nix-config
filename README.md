@@ -62,8 +62,7 @@ invoke `nh` directly, e.g. `nh os switch . --hostname <hostname>`.
 ### Add a new host
 
 1. Create `host/<hostname>/configuration.nix` and `hardware-configuration.nix`
-   (add `disko.nix` and list the host in `diskoHosts` in `flake.nix` if it uses
-   disko)
+   (plus `disko.nix` if it uses disko; it is picked up automatically)
 2. Create `home/<hostname>.nix` importing the bundles you want
 3. Add the hostname to the `nixosConfigurations` list in `flake.nix`
 
