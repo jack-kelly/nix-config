@@ -26,15 +26,9 @@
   boot.kernelPackages = lib.mkForce pkgs.linuxPackages_7_2;
 
   hardware = {
-    keyboard.zsa.enable = true;
     graphics.enable = true;
     system76.enableAll = true;
   };
-
-  environment.systemPackages = with pkgs; [
-    wally-cli
-    keymapp
-  ];
 
   # Hibernate: resume from the LUKS swap partition (see disko.nix). The systemd
   # initrd unlocks it before resume.

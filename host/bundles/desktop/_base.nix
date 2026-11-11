@@ -37,6 +37,9 @@
   };
   services.upower.enable = true;
 
+  # GUI for ZSA keyboards; the udev rules and wally-cli are in the global bundle.
+  environment.systemPackages = [ pkgs.keymapp ];
+
   # Firefox is managed entirely by home-manager (home/bundles/desktop/firefox.nix),
   # which builds the wrapped package (policies, extensions) and installs the
   # 1Password native-messaging host. Do NOT enable the NixOS-level

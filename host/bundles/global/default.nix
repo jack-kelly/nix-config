@@ -55,8 +55,13 @@
   services.openssh.enable = true;
   services.envfs.enable = true;
 
+  # ZSA keyboards get plugged into any of these machines: udev rules for
+  # flashing, plus the CLI flasher. The GUI (keymapp) is in the desktop bundle.
+  hardware.keyboard.zsa.enable = true;
+
   environment.systemPackages = with pkgs; [
     vim
+    wally-cli
     wget
   ];
 }
