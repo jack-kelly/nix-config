@@ -39,7 +39,7 @@
       # nvKmsResume Oops / suspend hang), no driver version fixes it (open-gpu #1142, same
       # AD107), and clean compute-only isn't possible on NixOS (hardware.nvidia is gated on
       # `nvidia` ∈ videoDrivers, so dropping it kills CUDA). Suspend is therefore masked
-      # below — use poweroff. Full writeup: host/lobotomizer/firmware-runbook.md.
+      # below — use poweroff.
       powerManagement.enable = false; # no VRAM-preserve suspend services (we never suspend)
       powerManagement.finegrained = true; # RTD3: dGPU powers down when idle (battery)
       open = false;
@@ -63,7 +63,7 @@
     keymapp
     # System76 Open Firmware flashing: scripts/flash.sh calls `sudo efibootmgr` to set
     # BootNext into the firmware updater. Installing it system-wide puts it on sudo's
-    # secure_path so flash.sh works without absolute store paths. See host/lobotomizer/firmware-runbook.md
+    # secure_path so flash.sh works without absolute store paths.
     efibootmgr
   ];
 
@@ -72,9 +72,9 @@
   services.power-profiles-daemon.enable = false;
 
   # S3 suspend is unsupported on this machine — the nvidia dGPU's resume is broken at every
-  # firmware/driver/PM combo and there's no clean fix (see the nvidia block above and
-  # host/lobotomizer/firmware-runbook.md). Hard-guard against accidentally triggering the
-  # broken suspend: mask the sleep targets, and make the lid/keys lock or poweroff — never suspend.
+  # firmware/driver/PM combo and there's no clean fix (see the nvidia block above).
+  # Hard-guard against accidentally triggering the broken suspend: mask the sleep
+  # targets, and make the lid/keys lock or poweroff — never suspend.
   systemd.targets = {
     sleep.enable = false;
     suspend.enable = false;
