@@ -29,9 +29,7 @@
       difftastic
       dig
       dnsmasq
-      eza
       fd
-      fzf
       gcc
       gnumake
       gnupg
@@ -45,7 +43,6 @@
       jjui
       just
       jq
-      killall
       lazygit
       lnav
       ngrep

@@ -1,8 +1,4 @@
-{
-  lib,
-  pkgs,
-  ...
-}:
+{ lib, ... }:
 {
   imports = [
     ../bundles/cli
@@ -16,10 +12,6 @@
   # profile — even ones with stylix disabled — tripping the useGlobalPkgs
   # "nixpkgs.overlays set" warning. Disable them everywhere.
   stylix.overlays.enable = false;
-
-  programs = {
-    git.enable = true;
-  };
 
   home = {
     stateVersion = lib.mkDefault "26.05";

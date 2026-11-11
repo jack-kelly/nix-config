@@ -15,18 +15,13 @@
 
   fonts.fontconfig.enable = true;
 
-  home.packages =
-    (with pkgs; [
-      alacritty
-      signal-desktop
-      zellij
+  home.packages = with pkgs; [
+    discord
+    obsidian
+    signal-desktop
+    spotify
 
-      nerd-fonts.inconsolata
-      nerd-fonts.fira-code
-    ])
-    ++ (with pkgs; [
-      discord
-      obsidian
-      spotify
-    ]);
+    nerd-fonts.inconsolata
+    nerd-fonts.fira-code
+  ];
 }
