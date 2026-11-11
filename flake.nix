@@ -38,9 +38,7 @@
       ...
     }@inputs:
     let
-      inherit (self) outputs;
       perSystem = callback: nixpkgs.lib.genAttrs (import systems) (system: callback (pkgs system));
-      flakePath = config: "${config.home.homeDirectory}/code/github.com/jack-kelly/nix-config";
       pkgs =
         system:
         import nixpkgs {
@@ -60,7 +58,7 @@
       mkHost =
         hostname:
         nixpkgs.lib.nixosSystem {
-          specialArgs = { inherit inputs outputs; };
+          specialArgs = { inherit inputs; };
           modules = [
             ./host/${hostname}/configuration.nix
             disko.nixosModules.disko
@@ -74,7 +72,7 @@
               {
                 home-manager = {
                   extraSpecialArgs = {
-                    inherit flakePath inputs outputs;
+                    inherit inputs;
                     pkgs-stable = pkgs-stable config.nixpkgs.hostPlatform.system;
                   };
                   useGlobalPkgs = true;
