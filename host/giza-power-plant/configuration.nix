@@ -9,6 +9,10 @@
   ];
   networking.hostName = "giza-power-plant";
 
+  # The one GNOME machine; the others run i3 (../bundles/i3).
+  services.displayManager.gdm.enable = true;
+  services.desktopManager.gnome.enable = true;
+
   services.xserver.videoDrivers = [
     "nvidia"
     "modesetting"

@@ -1,7 +1,7 @@
 { pkgs, ... }:
 {
   imports = [
-    ../desktop/_base.nix
+    ../desktop
   ];
 
   services.displayManager.ly = {
