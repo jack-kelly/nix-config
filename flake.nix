@@ -14,6 +14,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
+    systems.url = "github:nix-systems/default";
     # Upstream builds Go 1.27.1 from source until nixpkgs-unstable's
     # go_1_27 catches up, so this works against our nixpkgs pin.
     tailcat = {
