@@ -1,4 +1,4 @@
-# Shell for bootstrapping flake-enabled nix and home-manager.
+# Shell for bootstrapping flake-enabled nix.
 # Flake-only: enter it with 'nix develop' (see devShells in flake.nix).
 
 { pkgs }:
@@ -8,7 +8,6 @@
     NIX_CONFIG = "experimental-features = nix-command flakes";
     nativeBuildInputs = with pkgs; [
       nix
-      home-manager
       git
       just
     ];
