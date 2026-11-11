@@ -12,7 +12,6 @@
     "nix-command"
     "flakes"
   ];
-  targets.genericLinux.enable = true;
 
   systemd.user.startServices = "sd-switch";
 
