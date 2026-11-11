@@ -8,11 +8,6 @@
     ../bundles/cli
   ];
 
-  nix.settings.experimental-features = [
-    "nix-command"
-    "flakes"
-  ];
-
   systemd.user.startServices = "sd-switch";
 
   # useGlobalPkgs makes home-manager ignore its own nixpkgs, so stylix's
@@ -23,13 +18,10 @@
   stylix.overlays.enable = false;
 
   programs = {
-    home-manager.enable = true;
     git.enable = true;
   };
 
   home = {
-    username = lib.mkDefault "jack";
-    homeDirectory = lib.mkDefault "/home/jack";
     stateVersion = lib.mkDefault "26.05";
     shell.enableZshIntegration = true;
   };
