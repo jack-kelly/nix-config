@@ -12,7 +12,7 @@
     # are written to the firefox package's policies.json and apply to every
     # profile regardless of on-disk location, whereas HM's per-profile config
     # (user.js, extensions.packages) targets the XDG path this firefox doesn't
-    # use. See the project memory on the profile-path mismatch.
+    # use (see the stylix note above).
     policies = {
       # Restore the previous session on startup. This is the policy equivalent
       # of `browser.startup.page = 3`, which is not settable via the Preferences
