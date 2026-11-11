@@ -26,10 +26,7 @@
   # else). Stay on 7.2 until that's fixed.
   boot.kernelPackages = lib.mkForce pkgs.linuxPackages_7_2;
 
-  hardware = {
-    graphics.enable = true;
-    system76.enableAll = true;
-  };
+  hardware.graphics.enable = true;
 
   # Hibernate: resume from the LUKS swap partition (see disko.nix). The systemd
   # initrd unlocks it before resume.

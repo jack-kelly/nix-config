@@ -1,6 +1,12 @@
-{ config, pkgs, ... }:
+{
+  config,
+  pkgs,
+  inputs,
+  ...
+}:
 {
   imports = [
+    inputs.nixos-hardware.nixosModules.system76
     ../bundles/global
     ../bundles/i3
     ../bundles/work
@@ -28,7 +34,6 @@
 
   hardware = {
     graphics.enable = true;
-    system76.enableAll = true;
     nvidia = {
       modesetting.enable = true;
       # Display + suspend (settled 2026-06-24): X runs iGPU-primary with nvidia as a PRIME
