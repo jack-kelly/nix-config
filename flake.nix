@@ -65,11 +65,16 @@
           ++ [
             (
               { config, ... }:
+              let
+                stable = pkgs-stable config.nixpkgs.hostPlatform.system;
+              in
               {
+                # The same pkgs-stable for NixOS and home-manager modules.
+                _module.args.pkgs-stable = stable;
                 home-manager = {
                   extraSpecialArgs = {
                     inherit inputs;
-                    pkgs-stable = pkgs-stable config.nixpkgs.hostPlatform.system;
+                    pkgs-stable = stable;
                   };
                   useGlobalPkgs = true;
                   users.jack = import ./home/${hostname}.nix;

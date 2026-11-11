@@ -1,6 +1,6 @@
 {
   config,
-  pkgs,
+  pkgs-stable,
   inputs,
   ...
 }:
@@ -25,10 +25,10 @@
       open = true;
       nvidiaSettings = true;
       # patchelf 0.19.2 (unstable) corrupts nvidia-smi's program headers (segfault in ld.so
-      # on launch); build the userspace driver with the 25.05 patchelf (0.15.2) instead.
+      # on launch); build the userspace driver with stable's patchelf (0.15.2) instead.
       package = config.boot.kernelPackages.nvidiaPackages.latest.overrideAttrs (old: {
         nativeBuildInputs = [
-          inputs.nixpkgs-stable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.patchelf
+          pkgs-stable.patchelf
         ]
         ++ (old.nativeBuildInputs or [ ]);
       });
