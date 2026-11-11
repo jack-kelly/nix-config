@@ -1,4 +1,5 @@
-# Shell for bootstrapping flake-enabled nix.
+# Shell for bootstrapping: everything the justfile recipes call, for a
+# machine that hasn't switched to this config yet.
 # Flake-only: enter it with 'nix develop' (see devShells in flake.nix).
 
 { pkgs }:
@@ -10,6 +11,8 @@
       nix
       git
       just
+      nh
+      nixfmt-tree
     ];
   };
 }

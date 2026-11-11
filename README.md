@@ -50,7 +50,7 @@ just check         # nix flake check
 
 For another host, call `nh` directly: `nh os switch . --hostname <hostname>`.
 
-`nix develop` gives a bootstrap shell with nix, git and just.
+`nix develop` gives a bootstrap shell with everything the recipes need.
 
 ### Add a new host
 
