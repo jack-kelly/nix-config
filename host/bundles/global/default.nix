@@ -1,10 +1,14 @@
-{ pkgs, ... }:
+{ inputs, pkgs, ... }:
 {
   nixpkgs.config.allowUnfree = true;
 
-  # electron 43 leaves obsidian as a blank window (webFrame init fails in the
-  # renderer); 44 works. Drop once the default electron fixes it.
   nixpkgs.overlays = [
+    # This flake's own packages (pkgs/), e.g. claude-code. Replaces the
+    # nixpkgs package of the same name.
+    inputs.self.overlays.default
+
+    # electron 43 leaves obsidian as a blank window (webFrame init fails in the
+    # renderer); 44 works. Drop once the default electron fixes it.
     (final: prev: {
       obsidian = prev.obsidian.override { electron = final.electron_44; };
     })

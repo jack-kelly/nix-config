@@ -7,14 +7,12 @@
   home.packages =
     (with pkgs; [
       awscli2
+      claude-code # ours, via the flake overlay (see pkgs/)
       openvpn
       networkmanager-openvpn
       slack
       uv
     ])
-    ++ [
-      (pkgs.callPackage ../../../pkgs/claude-code { })
-    ]
     ++ (with pkgs-stable; [
       # unstable's avro-c++ is built against fmt 12, which breaks libserdes' build
       kcat
