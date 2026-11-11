@@ -1,6 +1,5 @@
 {
   config,
-  pkgs-stable,
   inputs,
   ...
 }:
@@ -24,14 +23,7 @@
       modesetting.enable = true;
       open = true;
       nvidiaSettings = true;
-      # patchelf 0.19.2 (unstable) corrupts nvidia-smi's program headers (segfault in ld.so
-      # on launch); build the userspace driver with stable's patchelf (0.15.2) instead.
-      package = config.boot.kernelPackages.nvidiaPackages.latest.overrideAttrs (old: {
-        nativeBuildInputs = [
-          pkgs-stable.patchelf
-        ]
-        ++ (old.nativeBuildInputs or [ ]);
-      });
+      package = config.boot.kernelPackages.nvidiaPackages.latest;
     };
 
     # udev rules for the G700s receiver; solaar itself comes in via home
