@@ -5,7 +5,11 @@
     enableZshIntegration = true;
     # Bind Ctrl-R to atuin's search, but leave Up/Down as normal zsh history.
     flags = [ "--disable-up-arrow" ];
+    # Thread capture needs the daemon.
+    daemon.enable = true;
     settings = {
+      daemon.enabled = true;
+      threads.capture = true;
       # Sync against atuin's public, end-to-end-encrypted server.
       sync_address = "https://api.atuin.sh";
       auto_sync = true;
