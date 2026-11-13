@@ -4,74 +4,38 @@
     enable = true;
     enableZshIntegration = true;
     settings = {
+      # `$all` doesn't include `$vcs` and would re-render the git modules, so
+      # this is `$all` with the per-VCS modules swapped for `$vcs`.
+      format = builtins.concatStringsSep "" [
+        "$username$hostname$localip$shlvl$singularity$kubernetes$nats$directory"
+        "$vcsh$vcs$custom"
+        "$docker_context$package$bun$c$cmake$cobol$cpp$daml$dart$deno$dotnet$elixir$elm$erlang$fennel"
+        "$fortran$gleam$golang$gradle$haskell$haxe$helm$java$julia$kotlin$lua$maven$mojo$nim$nodejs"
+        "$ocaml$odin$opa$perl$php$pulumi$purescript$python$quarto$raku$rlang$red$ruby$rust$scala"
+        "$solidity$swift$terraform$typst$vlang$vagrant$xmake$zig$buf$guix_shell$nix_shell$conda$pixi"
+        "$meson$spack$memory_usage$aws$gcloud$openstack$azure$direnv$env_var$mise$crystal$sudo"
+        "$cmd_duration$line_break$jobs$battery$time$status$container$netns$os$shell$character"
+      ];
+
       hostname = {
         ssh_only = false;
         format = "[$hostname]($style) ";
       };
 
-      # Disable built-in git modules (replaced by custom modules below)
-      git_status.disabled = true;
-      git_commit.disabled = true;
-      git_metrics.disabled = true;
-      git_branch.disabled = true;
-
-      custom = {
-        # Custom module for jj status
-        jj = {
-          description = "The current jj status";
-          when = "jj --ignore-working-copy root";
-          symbol = "🥋 ";
-          command = ''
-            jj log --revisions @ --no-graph --ignore-working-copy --color always --limit 1 --template '
-              separate(" ",
-                change_id.shortest(4),
-                bookmarks,
-                "|",
-                concat(
-                  if(conflict, "💥"),
-                  if(divergent, "🚧"),
-                  if(hidden, "👻"),
-                  if(immutable, "🔒"),
-                ),
-                raw_escape_sequence("\x1b[1;32m") ++ if(empty, "(empty)"),
-                raw_escape_sequence("\x1b[1;32m") ++ coalesce(
-                  truncate_end(80, description.first_line(), "…"),
-                  "(no description set)",
-                ) ++ raw_escape_sequence("\x1b[0m"),
-              )
-            '
-          '';
-        };
-
-        # Git modules that only show when not in a jj repo
-        git_status = {
-          when = "! jj --ignore-working-copy root";
-          command = "starship module git_status";
-          style = "";
-          description = "Only show git_status if we're not in a jj repo";
-        };
-
-        git_commit = {
-          when = "! jj --ignore-working-copy root";
-          command = "starship module git_commit";
-          style = "";
-          description = "Only show git_commit if we're not in a jj repo";
-        };
-
-        git_metrics = {
-          when = "! jj --ignore-working-copy root";
-          command = "starship module git_metrics";
-          style = "";
-          description = "Only show git_metrics if we're not in a jj repo";
-        };
-
-        git_branch = {
-          when = "! jj --ignore-working-copy root";
-          command = "starship module git_branch";
-          style = "";
-          description = "Only show git_branch if we're not in a jj repo";
-        };
+      # Built-in jj_change doesn't show the description. Empty output hides
+      # the module; jj_status already shows ◌ for an empty description.
+      custom.jj_description = {
+        when = "jj --ignore-working-copy root";
+        command = ''jj log -r @ --no-graph --ignore-working-copy --limit 1 -T 'truncate_end(80, description.first_line(), "…")' '';
+        style = "bold green";
+        format = "[$output]($style) ";
       };
+
+      # Prefer jj over git in colocated repos
+      vcs.order = [
+        "jj"
+        "git"
+      ];
     };
   };
 }
