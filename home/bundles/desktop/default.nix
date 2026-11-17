@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 {
   imports = [
     ./alacritty.nix
@@ -14,6 +14,12 @@
   };
 
   fonts.fontconfig.enable = true;
+
+  xdg.userDirs = {
+    enable = true;
+    createDirectories = false;
+    download = "${config.home.homeDirectory}/Downloads";
+  };
 
   home.packages = with pkgs; [
     discord
