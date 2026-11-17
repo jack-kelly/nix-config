@@ -17,6 +17,7 @@
 
   home.packages = with pkgs; [
     discord
+    evince
     obsidian
     signal-desktop
     spotify
