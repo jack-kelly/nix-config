@@ -16,6 +16,9 @@
         IdentitiesOnly = true;
       };
     };
-    includes = [ "~/.ssh/config.work" ];
+    includes = [
+      "~/.ssh/config.work"
+      "~/.ssh/config.d/*"
+    ];
   };
 }
