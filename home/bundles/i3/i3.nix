@@ -191,6 +191,7 @@ in
       # Don't warp the cursor to the newly focused window/output on every
       # keyboard focus change.
       focus.mouseWarping = false;
+      focus.followMouse = false;
 
       keybindings = lib.mkOptionDefault {
         # Launch
